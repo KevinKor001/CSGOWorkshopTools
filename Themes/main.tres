@@ -125,6 +125,63 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1j7u"]
+bg_color = Color(0.3529412, 0.36862746, 0.43137255, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34407586, 0.34407574, 0.3440756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jkwgi"]
+bg_color = Color(0.3529412, 0.36862746, 0.43137255, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34407586, 0.34407574, 0.3440756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76ayk"]
+bg_color = Color(0.3529412, 0.36862746, 0.43137255, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34407586, 0.34407574, 0.3440756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xxyuy"]
+bg_color = Color(0.09620472, 0.09620475, 0.09620469, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txo4x"]
+bg_color = Color(0.30980393, 0.30588236, 0.36862746, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34407586, 0.34407574, 0.3440756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+shadow_size = 1
+shadow_offset = Vector2(1, 1)
+
 [resource]
 Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
@@ -165,3 +222,10 @@ SplitContainer/constants/minimum_grab_thickness = 3
 SplitContainer/constants/separation = 3
 SplitContainer/styles/split_bar_background = SubResource("StyleBoxFlat_c6fyd")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_4ubf7")
+Tree/font_sizes/font_size = 12
+Tree/font_sizes/title_button_font_size = 12
+Tree/styles/button_hover = SubResource("StyleBoxFlat_p1j7u")
+Tree/styles/custom_button_hover = SubResource("StyleBoxFlat_jkwgi")
+Tree/styles/hovered = SubResource("StyleBoxFlat_76ayk")
+Tree/styles/panel = SubResource("StyleBoxFlat_xxyuy")
+Tree/styles/selected = SubResource("StyleBoxFlat_txo4x")

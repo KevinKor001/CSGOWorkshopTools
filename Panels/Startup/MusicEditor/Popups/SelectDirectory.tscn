@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cfiq0kac71uk0"]
+
+[node name="SelectDirectory" type="FileDialog" unique_id=916418306]
+oversampling_override = 1.0
+position = Vector2i(0, 36)
+visible = true
+use_native_dialog = true
+option_count = 1
+option_0/name = "test"

@@ -1,0 +1,206 @@
+[gd_scene format=3 uid="uid://c5gonxbpdq0wp"]
+
+[ext_resource type="Script" uid="uid://bbq064bgtw04j" path="res://Panels/Startup/startup_screen.gd" id="1_688yu"]
+[ext_resource type="FontFile" uid="uid://cf1svpg7gfukx" path="res://Fonts/Segoe UI Bold.ttf" id="1_egwnh"]
+[ext_resource type="PackedScene" uid="uid://dpes7w3a4v5cq" path="res://Panels/Startup/StartupSelector/ItemEditorLauncher.tscn" id="2_e1wve"]
+[ext_resource type="Texture2D" uid="uid://b66mq0pd5o3ef" path="res://icons/plus.png" id="3_e1wve"]
+[ext_resource type="Texture2D" uid="uid://3cp5beypyfan" path="res://icons/hammer.png" id="4_mrlcw"]
+[ext_resource type="PackedScene" uid="uid://bkvlkxpi3vy6b" path="res://Panels/Startup/StartupSelector/MusicEditorLauncher.tscn" id="4_pfnby"]
+[ext_resource type="Texture2D" uid="uid://de6xpnb7lp7jb" path="res://icons/toolbox.png" id="5_iit07"]
+[ext_resource type="PackedScene" uid="uid://lwpddr604ihe" path="res://Panels/Startup/StartupSelector/SkinEditorLauncher.tscn" id="5_w5um0"]
+[ext_resource type="Texture2D" uid="uid://dnwikkelbcmmu" path="res://icons/address.png" id="6_688yu"]
+[ext_resource type="FontFile" uid="uid://bq6g3j27xbx3v" path="res://Fonts/Segoe UI Bold Italic.ttf" id="8_gnlp0"]
+[ext_resource type="Script" uid="uid://b20odv6sta2ui" path="res://Panels/Startup/install_toolchain.gd" id="9_42vpm"]
+[ext_resource type="PackedScene" uid="uid://b1kfcuihmt78j" path="res://Panels/Startup/PopupOKWindow.tscn" id="10_pqxgs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x347m"]
+bg_color = Color(0.39308554, 0.39308554, 0.39308533, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_688yu"]
+bg_color = Color(0.33903477, 0.16174147, 0, 0.6156863)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+
+[node name="Control" type="Control" unique_id=587532509]
+custom_minimum_size = Vector2(850, 630)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 850.0
+offset_bottom = 630.0
+script = ExtResource("1_688yu")
+
+[node name="Panel" type="Panel" parent="." unique_id=1430079712]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=293297433]
+custom_minimum_size = Vector2(825, 400)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer" type="Container" parent="Panel/VBoxContainer" unique_id=1804621264]
+custom_minimum_size = Vector2(50, 15)
+layout_mode = 2
+
+[node name="Banner" type="TextureRect" parent="Panel/VBoxContainer" unique_id=917881562]
+custom_minimum_size = Vector2(0, 180)
+custom_maximum_size = Vector2(-1, 180)
+layout_mode = 2
+
+[node name="Sepparator" type="Panel" parent="Panel/VBoxContainer" unique_id=2146624370]
+custom_minimum_size = Vector2(10, 15)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x347m")
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/Sepparator" unique_id=1888639135]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_egwnh")
+theme_override_font_sizes/font_size = 12
+text = "Items & Other"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1283774784]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ItemEditor" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1807165355 instance=ExtResource("2_e1wve")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Control4" parent="Panel/VBoxContainer/HBoxContainer" unique_id=2047709740 instance=ExtResource("2_e1wve")]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Control" parent="Panel/VBoxContainer/HBoxContainer" unique_id=356268526 instance=ExtResource("4_pfnby")]
+layout_mode = 2
+
+[node name="Control2" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1674773089 instance=ExtResource("5_w5um0")]
+layout_mode = 2
+
+[node name="Sepparator2" type="Panel" parent="Panel/VBoxContainer" unique_id=449267412]
+custom_minimum_size = Vector2(10, 15)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x347m")
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/Sepparator2" unique_id=651469353]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_egwnh")
+theme_override_font_sizes/font_size = 12
+text = "Addon maps"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CreateAddon" type="Button" parent="Panel/VBoxContainer" unique_id=312100758]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create Addon"
+icon = ExtResource("3_e1wve")
+expand_icon = true
+
+[node name="FoldableContainer" type="FoldableContainer" parent="Panel/VBoxContainer" unique_id=1737769158]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 13
+title = "Addons"
+title_alignment = 1
+
+[node name="ItemList" type="ItemList" parent="Panel/VBoxContainer/FoldableContainer" unique_id=2082658362]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=759478782]
+layout_mode = 2
+
+[node name="OpenHammer" type="Button" parent="Panel/VBoxContainer/HBoxContainer2" unique_id=892487349]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_egwnh")
+disabled = true
+text = "Launch Hammer Plus Plus"
+icon = ExtResource("4_mrlcw")
+expand_icon = true
+
+[node name="Button2" type="Button" parent="Panel/VBoxContainer/HBoxContainer2" unique_id=240060082]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_egwnh")
+text = "Configure Enviroment
+"
+icon = ExtResource("5_iit07")
+expand_icon = true
+
+[node name="Button3" type="Button" parent="Panel/VBoxContainer/HBoxContainer2" unique_id=108901424]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_fonts/font = ExtResource("1_egwnh")
+text = "Credits"
+icon = ExtResource("6_688yu")
+expand_icon = true
+
+[node name="MissingSDK" type="Panel" parent="Panel" unique_id=81639882]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_688yu")
+
+[node name="Label" type="Label" parent="Panel/MissingSDK" unique_id=185426783]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_gnlp0")
+text = "Could not detect SDK Toolchain
+
+Would you like to try to install it automatically?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InstallToolchain" type="Button" parent="Panel/MissingSDK" unique_id=93057903]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -113.0
+offset_top = 47.0
+offset_right = 113.0
+offset_bottom = 72.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Install toolchain (Requires steam to be on)"
+script = ExtResource("9_42vpm")
+
+[node name="Window" parent="." unique_id=358554546 instance=ExtResource("10_pqxgs")]
+visible = false
+
+[connection signal="pressed" from="Panel/MissingSDK/InstallToolchain" to="Panel/MissingSDK/InstallToolchain" method="_on_pressed"]

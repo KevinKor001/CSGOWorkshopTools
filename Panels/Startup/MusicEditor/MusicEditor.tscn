@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://d0jbnl6147w31"]
+
+[ext_resource type="Script" uid="uid://btlpl6b0jqc5t" path="res://Panels/Startup/MusicEditor/MusicEditor.gd" id="1_c6fyd"]
+
+[node name="Control" type="Control" unique_id=971279008]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_c6fyd")
+
+[node name="Panel" type="Panel" parent="." unique_id=1981125819]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=2011829437]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Panel" unique_id=1534197971]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+size_flags_horizontal = 3
+
+[node name="AssetPanel" type="Panel" parent="Panel/HSplitContainer" unique_id=236613349]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioEditor" type="Panel" parent="Panel/HSplitContainer" unique_id=1421632424]
+layout_mode = 2
+size_flags_horizontal = 3

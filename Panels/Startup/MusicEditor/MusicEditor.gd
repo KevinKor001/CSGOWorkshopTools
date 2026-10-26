@@ -5,7 +5,7 @@ var config = ConfigFile.new()
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	setupWindow()
-	#GameManager.launch_windows_exe_via_wine(AppData.gameDir + "csgo.exe", ["-netconport 2121"])
+	
 	setup_musicKit_tree(tree)
 
 	
@@ -16,6 +16,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 func setupWindow():
+	open_game()
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	
 
@@ -48,3 +49,21 @@ func setup_musicKit_tree(tree : Tree):
 	
 	
 	pass
+
+
+func _on_test_pressed() -> void:
+	pass
+	
+func open_game():
+	print("Game launch Sequence")
+	
+	var exe_path = AppData.gameDir + "/csgo.exe"
+	var args = ["-netconport", "2121", "-windowed", "-novid", "-nojoy", "-insecure", "+name", "Dev", "-offline"]
+	var proton_path = AppData.protonPath
+	var prefix_path = AppData.protonPrefix
+	
+	if proton_path.is_empty() or prefix_path.is_empty():
+		push_error("Proton path or prefix not configured in settings")
+		return
+	
+	GameManager.launch_with_proton(exe_path, args, proton_path, prefix_path)

@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bbfghgor7c63x" path="res://icons/cd_edit.png" id="3_iv5r2"]
 [ext_resource type="Texture2D" uid="uid://cubk4vx5ag22v" path="res://icons/cog_edit.png" id="4_b2mwd"]
 [ext_resource type="Texture2D" uid="uid://ce68wq533xm7p" path="res://icons/bricks.png" id="4_eg354"]
+[ext_resource type="Script" uid="uid://cqkpt4v20qrj5" path="res://Panels/Startup/MusicEditor/preview.gd" id="6_hajql"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x347m"]
 bg_color = Color(0.15127608, 0.15127608, 0.15127605, 1)
@@ -81,7 +82,16 @@ expand_icon = true
 [node name="VSeparator" type="VSeparator" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1517789814]
 layout_mode = 2
 
-[node name="NewMusicKit3" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1478631810]
+[node name="Test" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1478631810]
+custom_minimum_size = Vector2(107.345, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "TEST BUTTON"
+icon = ExtResource("4_b2mwd")
+alignment = 0
+expand_icon = true
+
+[node name="NewMusicKit4" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=2078102865]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -99,6 +109,7 @@ text = "Preview"
 icon = ExtResource("4_eg354")
 alignment = 0
 expand_icon = true
+script = ExtResource("6_hajql")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="Panel/VBoxContainer" unique_id=1534197971]
 layout_mode = 2
@@ -130,3 +141,6 @@ column_titles_visible = true
 [node name="AudioEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=1421632424]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Test" to="." method="_on_test_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Preview" to="Panel/VBoxContainer/Panel/HBoxContainer/Preview" method="_on_pressed"]

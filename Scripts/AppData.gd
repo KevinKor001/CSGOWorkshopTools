@@ -5,7 +5,7 @@ extends Node
 @export var VERSION = "1.0.0"
 @export var IsSupramacyInstall = false
 @export var IsToolChainInstalled = false
-@export var gameLaunchArgs = ""
+@export var gameLaunchArgs = ["-windowed", "+echo TEST"]
 @export var protonPath = ""
 @export var protonPrefix = ""
 
@@ -23,14 +23,15 @@ func getProtonExec():
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
+	gameDir = ArgParser.csgo_dir 
 	var config = ConfigFile.new()
 	config.load(getToolConfigPath())
+	print("loading from "+ getToolConfigPath())
 	gameDir = config.get_value("General", "csgo_install")
 	IsSupramacyInstall = config.get_value("General", "supremacy_install")
 	protonPath = config.get_value("Linux", "ProtonPath")
-	protonPrefix = config.get_value("General", "ProtonPrefix")
-	gameDir = ArgParser.csgo_dir 
+	protonPrefix = config.get_value("Linux", "ProtonPrefix")
+
 	
 
 

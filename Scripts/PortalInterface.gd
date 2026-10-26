@@ -1,4 +1,5 @@
 extends Node
+class_name PortalInterface
 
 signal connected
 signal disconnected
@@ -18,39 +19,58 @@ func _init(host: String = "127.0.0.1", port: int = 2121, timeout: float = 5.0) -
 	_port = port
 	_timeout = timeout
 
-func connect_to_server() -> void:
-	_socket = StreamPeerTCP.new()
-	_socket.set_no_delay(true)
-	
-	var error = _socket.connect_to_host(_host, _port)
-	
-	if error != OK:
-		push_error("Failed to connect to %s:%d - Error: %d" % [_host, _port, error])
-		_socket = null
-		return
-	
-	# Wait for connection with timeout
-	var start_time = Time.get_ticks_msec()
-	while _socket.get_status() == StreamPeerTCP.STATUS_CONNECTING:
-		await get_tree().process_frame
-		if Time.get_ticks_msec() - start_time > _timeout * 1000:
-			push_error("Connection timeout")
+func connect_to_server(max_retries: int = 5, retry_delay: float = 2.0) -> void:
+	for attempt in range(max_retries):
+		_socket = StreamPeerTCP.new()
+		_socket.set_no_delay(true)
+		
+		var error = _socket.connect_to_host(_host, _port)
+		
+		if error != OK:
+			push_error("Attempt %d: Failed to connect to %s:%d - Error: %d" % [attempt + 1, _host, _port, error])
 			_socket = null
+			if attempt < max_retries - 1:
+				print("[PortalInterface] Retrying in %.1f seconds..." % retry_delay)
+				await get_tree().create_timer(retry_delay).timeout
+			continue
+		
+		# Wait for connection with timeout
+		var start_time = Time.get_ticks_msec()
+		while _socket.get_status() == StreamPeerTCP.STATUS_CONNECTING:
+			_socket.poll()
+			await get_tree().process_frame
+			if Time.get_ticks_msec() - start_time > _timeout * 1000:
+				push_error("Attempt %d: Connection timeout" % (attempt + 1))
+				_socket = null
+				if attempt < max_retries - 1:
+					print("[PortalInterface] Retrying in %.1f seconds..." % retry_delay)
+					await get_tree().create_timer(retry_delay).timeout
+				break
+		
+		# Check final status
+		_socket.poll()
+		if _socket and _socket.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+			_connected = true
+			_running = true
+			_listen_loop()
+			send_command("clear")
+			send_command("echo ---> PortalScript Interface Connected! <---")
+			print("[PortalInterface] Connected to netconsole on %s:%d!" % [_host, _port])
+			connected.emit()
 			return
+		else:
+			push_error("Attempt %d: Connection failed - status: %d" % [attempt + 1, _socket.get_status() if _socket else -1])
+			_socket = null
+			if attempt < max_retries - 1:
+				print("[PortalInterface] Retrying in %.1f seconds..." % retry_delay)
+				await get_tree().create_timer(retry_delay).timeout
 	
-	if _socket.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		_connected = true
-		_running = true
-		_listen_loop()
-		send_command("clear")
-		send_command("echo ---> PortalScript Interface Connected! <---")
-		print("[PortalInterface] Connected to netconsole on %s:%d!" % [_host, _port])
-		connected.emit()
-	else:
-		push_error("Connection failed")
-		_socket = null
+	push_error("Failed to connect after %d attempts" % max_retries)
+	_socket = null
 
 func send_command(command: String) -> void:
+	print("[PortalInterface] send_command called. _connected: %s, _socket: %s" % [_connected, _socket != null])
+	
 	if not _connected or not _socket:
 		push_error("Not connected to server")
 		return
@@ -61,7 +81,8 @@ func send_command(command: String) -> void:
 	if error != OK:
 		push_error("Failed to send command: %d" % error)
 	else:
-		print("[PortalInterface] Sent: %s" % command.strip())
+		print("[PortalInterface] Sent: %s" % command.strip_edges())
+		_socket.poll()
 
 func _listen_loop() -> void:
 	var buffer: PackedByteArray = []
@@ -89,7 +110,7 @@ func _listen_loop() -> void:
 		await get_tree().process_frame
 
 func _process_line(line: String) -> void:
-	line = line.strip()
+	line = line.strip_edges()
 	if line.is_empty():
 		return
 	
@@ -147,20 +168,20 @@ func get_player_velocity(timeout: float = 1.0) -> Dictionary:
 	
 	return _last_vector
 
-func disconnect() -> void:
+func disconnect_from_server() -> void:
 	_running = false
 	_connected = false
 	
 	if _socket:
-		send_command("echo ---> PortalScript Interface Disconnected! <---")
+		send_command("echo ---> PortalScript (for CSGO) Interface Disconnected! <---")
 		_socket.close()
 		_socket = null
 	
 	print("[PortalInterface] Disconnected")
 	disconnected.emit()
 
-func is_connected() -> bool:
+func has_connection() -> bool:
 	return _connected and _socket != null and _socket.get_status() == StreamPeerTCP.STATUS_CONNECTED
 
 func _exit_tree() -> void:
-	disconnect()
+	disconnect_from_server()

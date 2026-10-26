@@ -61,7 +61,7 @@ func detect_proton_installations() -> void:
 						if dir.current_is_dir() and is_proton:
 							var proton_path = builtin_proton_path + "/" + dir_name
 							_proton_installations.append(proton_path)
-							print("[Proton Detector] Found built-in: ", proton_path)
+#							print("[Proton Detector] Found built-in: ", proton_path)
 						dir_name = dir.get_next()
 	
 	# Remove duplicates
@@ -117,7 +117,7 @@ func _get_steam_library_folders(steam_root: String) -> Array:
 						var lib_path = parts[3]
 						if DirAccess.dir_exists_absolute(lib_path):
 							libraries.append(lib_path)
-							print("[Proton Detector] Found library: ", lib_path)
+#							print("[Proton Detector] Found library: ", lib_path)
 	
 	return libraries
 

@@ -6,7 +6,7 @@ var config = ConfigFile.new()
 func _ready() -> void:
 	setupWindow()
 	#GameManager.launch_windows_exe_via_wine(AppData.gameDir + "csgo.exe", ["-netconport 2121"])
-	setup_musicKit_tree(tree )
+	setup_musicKit_tree(tree)
 
 	
 	pass # Replace with function body.

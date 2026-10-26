@@ -160,7 +160,6 @@ icon = ExtResource("6_688yu")
 expand_icon = true
 
 [node name="MissingSDK" type="Panel" parent="Panel" unique_id=81639882]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -197,10 +196,29 @@ offset_right = 113.0
 offset_bottom = 72.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "Install toolchain (Requires steam to be on)"
+text = "Install FULL toolchain 
+(Only for map creation & Requires steam to be on)"
+script = ExtResource("9_42vpm")
+
+[node name="InstallToolchain2" type="Button" parent="Panel/MissingSDK" unique_id=769409474]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -113.0
+offset_top = 96.0
+offset_right = 113.0
+offset_bottom = 121.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Setup OCSWT without Mapping support  
+(No Downloads needed)"
 script = ExtResource("9_42vpm")
 
 [node name="Window" parent="." unique_id=358554546 instance=ExtResource("10_pqxgs")]
 visible = false
 
 [connection signal="pressed" from="Panel/MissingSDK/InstallToolchain" to="Panel/MissingSDK/InstallToolchain" method="_on_pressed"]
+[connection signal="pressed" from="Panel/MissingSDK/InstallToolchain2" to="Panel/MissingSDK/InstallToolchain2" method="_on_pressed_minimal"]

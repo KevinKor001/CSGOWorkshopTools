@@ -18,6 +18,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -36.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -35,3 +36,32 @@ layout_mode = 2
 
 [node name="CheckBox" type="CheckBox" parent="Panel/ScrollContainer/VBoxContainer" unique_id=1214737546]
 layout_mode = 2
+button_pressed = true
+text = "Launch game client with tools"
+
+[node name="CheckBox2" type="CheckBox" parent="Panel/ScrollContainer/VBoxContainer" unique_id=630507220]
+layout_mode = 2
+text = "Launch game client in full screen"
+
+[node name="Label2" type="Label" parent="Panel/ScrollContainer/VBoxContainer" unique_id=638078041]
+layout_mode = 2
+text = "Game Launch Args:"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/ScrollContainer/VBoxContainer" unique_id=696234574]
+layout_mode = 2
+placeholder_text = "-amogus +echo sus"
+
+[node name="CheckBox3" type="CheckBox" parent="Panel/ScrollContainer/VBoxContainer" unique_id=1009746446]
+layout_mode = 2
+text = "Dissable tool-game communication (This will stop hot reload)"
+
+[node name="Button" type="Button" parent="Panel" unique_id=2048563567]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Accept & Save"

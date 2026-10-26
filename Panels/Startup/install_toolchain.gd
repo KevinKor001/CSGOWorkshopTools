@@ -29,3 +29,19 @@ func runORinstallSourceSDK():
 
 func _on_pressed() -> void:
 	runORinstallSourceSDK()
+
+
+func _on_pressed_minimal() -> void:
+	var NewConfig = ConfigFile.new()
+	print("Making Config")
+	NewConfig.set_value("General","csgo_install",AppData.gameDir)
+	if DirAccess.dir_exists_absolute(AppData.gameDir + "/SupremacyRenewed"):
+		$"../../../Window".dialog_text = """
+		Hey! , looks like your game directory
+		contains a Supramacy Instance.. would you
+		like to create content for '/SupremacyRenewed'?"""
+		$"../../../Window".ok_button_text = 'Yes (There is no no because i couldnt figure it out :P)'
+		$"../../../Window".show()
+	print(AppData.getGameDir())	
+	print(AppData.getToolConfigPath())	
+	NewConfig.save(AppData.getToolConfigPath())

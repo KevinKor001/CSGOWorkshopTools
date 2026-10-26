@@ -28,36 +28,33 @@ func register_arg_function(flag: String, callback: Callable) -> void:
 	function_args[flag] = callback
 
 func _parse_arguments() -> void:
-
 	var args: PackedStringArray = OS.get_cmdline_user_args()
-
 	if args.is_empty():
 		args = OS.get_cmdline_args()
-		
-	print("[ArgParser] Raw arguments detected: ", args)
+	
+	print("[ArgParser] Raw arguments: ", args)
 	
 	var i: int = 0
 	while i < args.size():
 		var arg: String = args[i]
 		
 		match arg:
-			# --- VALUE ARGUMENTS ---
 			"-csgo_dir":
 				if i + 1 < args.size():
-					csgo_dir = args[i + 1]
-					csgo_dir = csgo_dir.remove_chars('"')
-					print("[ArgParser] CSGO Directory set to: ", csgo_dir)
+					csgo_dir = _strip_quotes(args[i + 1])
+					print("[ArgParser] CSGO Directory: ", csgo_dir)
 					i += 1
 				else:
 					push_error("[ArgParser] Missing value for -csgo_dir")
-			
-			# --- FUNCTION CALL ARGUMENTS ---
 			_:
 				if function_args.has(arg):
-					print("[ArgParser] Executing function trigger for: ", arg)
+					print("[ArgParser] Executing: ", arg)
 					function_args[arg].call()
 		
 		i += 1
+
+func _strip_quotes(input: String) -> String:
+	return input.replace('"', '')
 
 
 # Exampel function callback

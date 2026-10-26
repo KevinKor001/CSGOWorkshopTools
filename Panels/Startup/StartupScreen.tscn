@@ -12,6 +12,7 @@
 [ext_resource type="FontFile" uid="uid://bq6g3j27xbx3v" path="res://Fonts/Segoe UI Bold Italic.ttf" id="8_gnlp0"]
 [ext_resource type="Script" uid="uid://b20odv6sta2ui" path="res://Panels/Startup/install_toolchain.gd" id="9_42vpm"]
 [ext_resource type="PackedScene" uid="uid://b1kfcuihmt78j" path="res://Panels/Startup/PopupOKWindow.tscn" id="10_pqxgs"]
+[ext_resource type="PackedScene" uid="uid://b53y3bkn26pch" path="res://Panels/Startup/StartupSelector/ConfigWindow.tscn" id="13_w5um0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x347m"]
 bg_color = Color(0.39308554, 0.39308554, 0.39308533, 1)
@@ -220,5 +221,9 @@ script = ExtResource("9_42vpm")
 [node name="Window" parent="." unique_id=358554546 instance=ExtResource("10_pqxgs")]
 visible = false
 
+[node name="SetingsWindow" parent="." unique_id=321756169 instance=ExtResource("13_w5um0")]
+visible = false
+
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer2/Button2" to="." method="_on_button_config_pressed"]
 [connection signal="pressed" from="Panel/MissingSDK/InstallToolchain" to="Panel/MissingSDK/InstallToolchain" method="_on_pressed"]
 [connection signal="pressed" from="Panel/MissingSDK/InstallToolchain2" to="Panel/MissingSDK/InstallToolchain2" method="_on_pressed_minimal"]

@@ -34,13 +34,15 @@ func _on_pressed() -> void:
 func _on_pressed_minimal() -> void:
 	var NewConfig = ConfigFile.new()
 	print("Making Config")
-	NewConfig.set_value("General","csgo_install",AppData.gameDir)
-	if DirAccess.dir_exists_absolute(AppData.gameDir + "/SupremacyRenewed"):
+	NewConfig.set_value("General","csgo_install",AppData.getGameDir())
+	if DirAccess.dir_exists_absolute(AppData.getGameDir() + "/SupremacyRenewed"):
 		$"../../../Window".dialog_text = """
 		Hey! , looks like your game directory
 		contains a Supramacy Instance.. would you
 		like to create content for '/SupremacyRenewed'?"""
 		$"../../../Window".ok_button_text = 'Yes (There is no no because i couldnt figure it out :P)'
+		NewConfig.set_value("General","supremacy_install",true)
+		
 		$"../../../Window".show()
 	print(AppData.getGameDir())	
 	print(AppData.getToolConfigPath())	

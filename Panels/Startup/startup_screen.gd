@@ -46,3 +46,10 @@ func _process(delta: float) -> void:
 
 func _on_install_toolchain_minimal_pressed() -> void:
 	pass # Replace with function body.
+
+
+func _on_button_config_pressed() -> void:
+	
+	$SetingsWindow.show()
+	
+	

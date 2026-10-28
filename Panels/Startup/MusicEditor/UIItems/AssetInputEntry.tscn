@@ -1,5 +1,8 @@
 [gd_scene format=3 uid="uid://cn5q7m81s86kd"]
 
+[ext_resource type="Texture2D" uid="uid://ribp3eubv7n6" path="res://icons/Farm-Fresh_file_extension_wav.png" id="1_0jtmg"]
+[ext_resource type="Script" uid="uid://dwdyu0foun2pd" path="res://Panels/Startup/MusicEditor/UIItems/AssetInputEntry.gd" id="2_script"]
+
 [node name="AssetInputEntry" type="Control" unique_id=270181167]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 3
@@ -10,6 +13,7 @@ offset_right = -628.0
 offset_bottom = -570.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_script")
 
 [node name="Panel" type="Panel" parent="." unique_id=732629302]
 layout_mode = 1
@@ -30,7 +34,9 @@ grow_vertical = 2
 [node name="Button" type="Button" parent="Panel/HBoxContainer" unique_id=1054669401]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Insert Asset"
+icon = ExtResource("1_0jtmg")
+icon_alignment = 1
+expand_icon = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/HBoxContainer" unique_id=286698254]
 layout_mode = 2
@@ -46,3 +52,26 @@ layout_mode = 2
 [node name="LineEdit" type="LineEdit" parent="Panel/HBoxContainer/VBoxContainer" unique_id=552090511]
 layout_mode = 2
 placeholder_text = "Path"
+
+[node name="LineEdit2" type="LineEdit" parent="Panel/HBoxContainer/VBoxContainer" unique_id=153276981]
+layout_mode = 2
+placeholder_text = "Relative Path"
+editable = false
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/HBoxContainer/VBoxContainer" unique_id=68162495]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel/HBoxContainer/VBoxContainer" unique_id=1684017803]
+layout_mode = 2
+size_flags_vertical = 3
+value = 54.0
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/VBoxContainer/ProgressBar" unique_id=1857921037]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "status text"
+vertical_alignment = 2

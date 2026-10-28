@@ -2,10 +2,20 @@
 
 [ext_resource type="Script" uid="uid://btlpl6b0jqc5t" path="res://Panels/Startup/MusicEditor/MusicEditor.gd" id="1_c6fyd"]
 [ext_resource type="Texture2D" uid="uid://dvmkg4ak2m51a" path="res://icons/cd_add.png" id="2_4aasx"]
+[ext_resource type="Texture2D" uid="uid://3cp5beypyfan" path="res://icons/hammer.png" id="2_dc3uq"]
 [ext_resource type="Texture2D" uid="uid://bbfghgor7c63x" path="res://icons/cd_edit.png" id="3_iv5r2"]
 [ext_resource type="Texture2D" uid="uid://cubk4vx5ag22v" path="res://icons/cog_edit.png" id="4_b2mwd"]
 [ext_resource type="Texture2D" uid="uid://ce68wq533xm7p" path="res://icons/bricks.png" id="4_eg354"]
+[ext_resource type="FontFile" uid="uid://bq6g3j27xbx3v" path="res://Fonts/Segoe UI Bold Italic.ttf" id="5_wcrae"]
 [ext_resource type="Script" uid="uid://cqkpt4v20qrj5" path="res://Panels/Startup/MusicEditor/preview.gd" id="6_hajql"]
+[ext_resource type="Script" uid="uid://d0oiqsx10efg1" path="res://Panels/Startup/MusicEditor/WaveformRenderer.gd" id="8_wcrae"]
+[ext_resource type="Script" uid="uid://dd1qqqul7gdxw" path="res://Panels/Startup/MusicEditor/audio_editor.gd" id="9_audio_editor"]
+[ext_resource type="FontFile" uid="uid://bdowbpsyxrs0p" path="res://Fonts/SpaceMono-Bold.ttf" id="11_3usyn"]
+[ext_resource type="AudioStream" uid="uid://cej4cy6feysap" path="res://silence.wav" id="11_5f0eb"]
+[ext_resource type="Texture2D" uid="uid://dqy16h2wwy4hp" path="res://icons/timeline_marker.png" id="12_4aetk"]
+[ext_resource type="FontFile" uid="uid://ws4k4pkhqhav" path="res://Fonts/SpaceMono-Italic.ttf" id="12_f3jre"]
+[ext_resource type="PackedScene" uid="uid://cn5q7m81s86kd" path="res://Panels/Startup/MusicEditor/UIItems/AssetInputEntry.tscn" id="15_ixc2r"]
+[ext_resource type="PackedScene" uid="uid://b1kfcuihmt78j" path="res://Panels/Startup/PopupOKWindow.tscn" id="16_5f0eb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x347m"]
 bg_color = Color(0.15127608, 0.15127608, 0.15127605, 1)
@@ -23,6 +33,23 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnrhv"]
+bg_color = Color(0.16924527, 0.1692453, 0.16924527, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dc3uq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mik4o"]
+bg_color = Color(0.6375, 1, 0.25, 0.5254902)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wcrae"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fnca"]
+bg_color = Color(1, 1, 1, 0.771)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyrsl"]
+bg_color = Color(0.12955844, 0.1295585, 0.12955838, 1)
+
 [node name="Control" type="Control" unique_id=971279008]
 layout_mode = 3
 anchors_preset = 15
@@ -33,6 +60,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_c6fyd")
+packageConfigIcon = ExtResource("2_dc3uq")
 
 [node name="Panel" type="Panel" parent="." unique_id=1981125819]
 layout_mode = 1
@@ -63,7 +91,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NewMusicKit" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1896928089]
+[node name="NewMusicProject" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1896928089]
 custom_minimum_size = Vector2(58, 0)
 layout_mode = 2
 text = "New "
@@ -71,7 +99,7 @@ icon = ExtResource("2_4aasx")
 alignment = 0
 expand_icon = true
 
-[node name="NewMusicKit2" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=992996292]
+[node name="OpenProject" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=992996292]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "Open"
@@ -104,6 +132,7 @@ expand_icon = true
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 size_flags_horizontal = 8
+theme_override_fonts/font = ExtResource("5_wcrae")
 theme_override_styles/normal = SubResource("StyleBoxFlat_b2mwd")
 text = "Preview"
 icon = ExtResource("4_eg354")
@@ -115,8 +144,11 @@ script = ExtResource("6_hajql")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+split_offsets = PackedInt32Array(-214, -200)
+split_offset = -214
 
 [node name="AssetPanel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=236613349]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -139,8 +171,288 @@ size_flags_vertical = 3
 column_titles_visible = true
 
 [node name="AudioEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=1421632424]
+custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+script = ExtResource("9_audio_editor")
 
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor" unique_id=341524788]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=650196244]
+layout_mode = 2
+text = "Track Inspector"
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=1965832684]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qnrhv")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel" unique_id=258312485]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer" unique_id=1563099894]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch_mode = 4
+script = ExtResource("8_wcrae")
+audio_stream = ExtResource("11_5f0eb")
+waveform_color = Color(0.8611158, 0.48500007, 1.92523e-07, 1)
+background_color = Color(0.043039158, 0.04303915, 0.04303915, 1)
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect" unique_id=1193938098]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dc3uq")
+
+[node name="SyncPoint" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=1469714248]
+visible = false
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 0
+offset_right = 15.0
+offset_bottom = 200.0
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_mik4o")
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel/SyncPoint" unique_id=237955814]
+custom_minimum_size = Vector2(2.5, 0)
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wcrae")
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel/SyncPoint" unique_id=1295751933]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "     #S00"
+
+[node name="StartTrackTime" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=318078963]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("11_3usyn")
+text = "00:00:00"
+
+[node name="TotalTrackTime" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=4717383]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -79.0
+offset_top = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("11_3usyn")
+text = "00:00:00E"
+
+[node name="Playhead" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=2132660864]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_right = 66.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3fnca")
+
+[node name="ToolBar" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=2034742015]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Play" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1810906608]
+layout_mode = 2
+text = "Play"
+
+[node name="Pause" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1227327195]
+layout_mode = 2
+text = "Pause"
+
+[node name="top" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1658666641]
+layout_mode = 2
+text = "Stop"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=638551343]
+layout_mode = 2
+
+[node name="AddSyncPoint" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=624137188]
+layout_mode = 2
+text = "Add Sync Point"
+
+[node name="RemoveSyncPoint" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=112135890]
+layout_mode = 2
+text = "RemoveSyncPoint"
+
+[node name="Clock" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1484142940]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xyrsl")
+
+[node name="ClockLabel" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/Clock" unique_id=127784770]
+layout_mode = 1
+offset_right = 88.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "00:00:00.00"
+
+[node name="SyncPointTimer" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/Clock" unique_id=511165812]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.70000815, 0, 1)
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "00:00:00.00"
+vertical_alignment = 2
+
+[node name="yncPointMode" type="TextureRect" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/Clock" unique_id=1152237747]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.5
+offset_top = -7.5
+offset_right = 7.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_4aetk")
+
+[node name="InfoPanel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=2102951604]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xyrsl")
+
+[node name="ClockLabel" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/InfoPanel" unique_id=383509968]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "<FileName>"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SyncPointTimer" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/InfoPanel" unique_id=1005332626]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.70000815, 0, 1)
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "SyncPoint #x | y "
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="yncPointMode" type="TextureRect" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/InfoPanel" unique_id=1632633066]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.5
+offset_top = -7.5
+offset_right = 7.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_4aetk")
+
+[node name="VSeparator2" type="VSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1480718110]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=2146343112]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save Config"
+
+[node name="AssetInputEntry" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=270181167 instance=ExtResource("15_ixc2r")]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=498461100]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="FileDialog" type="FileDialog" parent="." unique_id=1132478033]
+display_mode = 1
+use_native_dialog = true
+
+[node name="PopUp" parent="." unique_id=358554546 instance=ExtResource("16_5f0eb")]
+visible = false
+
+[node name="Panel2" type="Panel" parent="." unique_id=34365575]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel2" unique_id=636544552]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 43
+text = "Waiting For game Instance .... plz hold"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/NewMusicProject" to="." method="_on_new_music_kit_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/OpenProject" to="." method="_on_open_project_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Test" to="." method="_on_test_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Preview" to="Panel/VBoxContainer/Panel/HBoxContainer/Preview" method="_on_pressed"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="custom_action" from="PopUp" to="." method="_on_popup_custom_button"]

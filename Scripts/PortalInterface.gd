@@ -22,7 +22,6 @@ func _init(host: String = "127.0.0.1", port: int = 2121, timeout: float = 5.0) -
 func connect_to_server(max_retries: int = 5, retry_delay: float = 2.0) -> void:
 	for attempt in range(max_retries):
 		_socket = StreamPeerTCP.new()
-		_socket.set_no_delay(true)
 		
 		var error = _socket.connect_to_host(_host, _port)
 		
@@ -50,6 +49,7 @@ func connect_to_server(max_retries: int = 5, retry_delay: float = 2.0) -> void:
 		# Check final status
 		_socket.poll()
 		if _socket and _socket.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+			_socket.set_no_delay(true)
 			_connected = true
 			_running = true
 			_listen_loop()
@@ -173,8 +173,9 @@ func disconnect_from_server() -> void:
 	_connected = false
 	
 	if _socket:
-		send_command("echo ---> PortalScript (for CSGO) Interface Disconnected! <---")
-		_socket.close()
+		if _socket.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+			send_command("echo ---> PortalScript (for CSGO) Interface Disconnected! <---")
+		_socket.disconnect_from_host()
 		_socket = null
 	
 	print("[PortalInterface] Disconnected")

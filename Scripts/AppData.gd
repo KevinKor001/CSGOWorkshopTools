@@ -8,6 +8,7 @@ extends Node
 @export var gameLaunchArgs = ["-windowed", "+echo TEST"]
 @export var protonPath = ""
 @export var protonPrefix = ""
+@export var cleanupOnClose = true
 
 
 func getGameDir():

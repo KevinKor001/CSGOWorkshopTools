@@ -16,6 +16,7 @@
 [ext_resource type="FontFile" uid="uid://ws4k4pkhqhav" path="res://Fonts/SpaceMono-Italic.ttf" id="12_f3jre"]
 [ext_resource type="PackedScene" uid="uid://cn5q7m81s86kd" path="res://Panels/Startup/MusicEditor/UIItems/AssetInputEntry.tscn" id="15_ixc2r"]
 [ext_resource type="PackedScene" uid="uid://b1kfcuihmt78j" path="res://Panels/Startup/PopupOKWindow.tscn" id="16_5f0eb"]
+[ext_resource type="Texture2D" uid="uid://cnn06no82y4m7" path="res://icons/extension_jpg.png" id="16_32nnf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x347m"]
 bg_color = Color(0.15127608, 0.15127608, 0.15127605, 1)
@@ -49,6 +50,9 @@ bg_color = Color(1, 1, 1, 0.771)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyrsl"]
 bg_color = Color(0.12955844, 0.1295585, 0.12955838, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8sdb"]
+bg_color = Color(0.11489678, 0.11489683, 0.11489671, 1)
 
 [node name="Control" type="Control" unique_id=971279008]
 layout_mode = 3
@@ -144,8 +148,8 @@ script = ExtResource("6_hajql")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-split_offsets = PackedInt32Array(-214, -200)
-split_offset = -214
+split_offsets = PackedInt32Array(-554)
+split_offset = -554
 
 [node name="AssetPanel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=236613349]
 custom_minimum_size = Vector2(200, 0)
@@ -171,6 +175,7 @@ size_flags_vertical = 3
 column_titles_visible = true
 
 [node name="AudioEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=1421632424]
+visible = false
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -418,10 +423,179 @@ text = "Save Config"
 [node name="AssetInputEntry" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=270181167 instance=ExtResource("15_ixc2r")]
 custom_minimum_size = Vector2(0, 125)
 layout_mode = 2
+default_icon = null
+default_asset_name = ""
+default_status_label = ""
 
-[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=498461100]
-custom_minimum_size = Vector2(200, 0)
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=569617346]
 layout_mode = 2
+
+[node name="TrackConfig" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=2011851610]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig" unique_id=1600455984]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Data" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel" unique_id=374356001]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1812091794]
+layout_mode = 2
+text = "Track priority"
+
+[node name="Priority" type="SpinBox" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=733018916]
+layout_mode = 2
+
+[node name="PriorityOverride" type="CheckBox" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=2030464255]
+layout_mode = 2
+text = "priority_override"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1294208802]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1003764345]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer" unique_id=1986548607]
+layout_mode = 2
+text = "Track Start Point"
+
+[node name="LockEndToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer" unique_id=313429259]
+layout_mode = 2
+toggle_mode = true
+text = "Lock to Playhead"
+
+[node name="SetStartToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer" unique_id=357997597]
+layout_mode = 2
+text = "Set to Playhead"
+
+[node name="TrackStartPoint" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1185814811]
+layout_mode = 2
+placeholder_text = "0.000000"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=167161413]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer2" unique_id=671256948]
+layout_mode = 2
+text = "Track End Point"
+
+[node name="LockEndToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer2" unique_id=670147196]
+layout_mode = 2
+toggle_mode = true
+text = "Lock to Playhead"
+
+[node name="SetEndToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer2" unique_id=827835250]
+layout_mode = 2
+text = "Set to Playhead"
+
+[node name="TrackEndPoint" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=125680535]
+layout_mode = 2
+placeholder_text = "0.000000"
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1440940910]
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1047889918]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer3" unique_id=291002134]
+layout_mode = 2
+text = "[x] Sync point queue "
+
+[node name="LockSyncPointToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer3" unique_id=2050713085]
+layout_mode = 2
+toggle_mode = true
+text = "Lock to Playhead"
+
+[node name="SetSyncPointToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer3" unique_id=2143881466]
+layout_mode = 2
+text = "Set to Playhead"
+
+[node name="ThisSyncPointTime" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=920755428]
+layout_mode = 2
+placeholder_text = "0.000000"
+
+[node name="SyncPointList" type="Tree" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig" unique_id=819483193]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConfigEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=498461100]
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor" unique_id=740387489]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PackageConfig" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer" unique_id=1814332358]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=196247487]
+layout_mode = 2
+text = "Music Kit Name"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=820862812]
+layout_mode = 2
+placeholder_text = "Epic Cool Musisk Kit"
+
+[node name="CoverArtInput" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=1216688391 instance=ExtResource("15_ixc2r")]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+default_icon = ExtResource("16_32nnf")
+default_asset_name = "Album cover art"
+default_status_label = "Idle - Empty"
+
+[node name="game_music_sounds" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer" unique_id=1556411024]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Config Path" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=380580092]
+visible = false
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r8sdb")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path" unique_id=118068812]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConfigPath" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path/HBoxContainer" unique_id=696913673]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "<Path>"
+
+[node name="OpenConfigFile" type="Button" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path/HBoxContainer" unique_id=222340940]
+layout_mode = 2
+text = "Open Config file"
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=885432000]
+layout_mode = 2
+text = "Music Kit Name"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=1499818344]
+layout_mode = 2
+placeholder_text = "Epic Cool Musisk Kit"
 
 [node name="FileDialog" type="FileDialog" parent="." unique_id=1132478033]
 display_mode = 1
@@ -431,6 +605,7 @@ use_native_dialog = true
 visible = false
 
 [node name="Panel2" type="Panel" parent="." unique_id=34365575]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -452,7 +627,6 @@ vertical_alignment = 1
 
 [connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/NewMusicProject" to="." method="_on_new_music_kit_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/OpenProject" to="." method="_on_open_project_pressed"]
-[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Test" to="." method="_on_test_pressed"]
-[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Preview" to="Panel/VBoxContainer/Panel/HBoxContainer/Preview" method="_on_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Preview" to="." method="hot_reload_to_game"]
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
 [connection signal="custom_action" from="PopUp" to="." method="_on_popup_custom_button"]

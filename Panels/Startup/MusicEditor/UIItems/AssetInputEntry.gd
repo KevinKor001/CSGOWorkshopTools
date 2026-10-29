@@ -1,5 +1,9 @@
 extends Control
 
+@export var default_icon: Texture2D
+@export var default_asset_name: String
+@export var default_status_label: String
+
 # UI Node references
 @onready var insert_button: Button = $Panel/HBoxContainer/Button
 @onready var asset_name_label: Label = $Panel/HBoxContainer/VBoxContainer/Label
@@ -12,6 +16,7 @@ var file_dialog: FileDialog
 var conversion_process: int = -1
 var current_input_file: String = ""
 var current_output_file: String = ""
+var current_output_mp3: String = ""
 var progress_file_path: String = ""
 var progress_timer: Timer
 var music_editor: Node
@@ -35,11 +40,23 @@ func _ready() -> void:
 	# Connect button signal
 	insert_button.pressed.connect(_on_insert_button_pressed)
 	
-	# Connect to MusicEditor asset selection signal
-	music_editor.asset_selected.connect(_on_asset_selected)
+	# Connect to MusicEditor asset selection signal - use call_deferred to ensure MusicEditor is ready
+	call_deferred("_connect_music_editor_signals")
 	
-	# Set initial status
-	_set_status("Idle", 0.0)
+	# Apply the defaults configured on this reusable entry scene.
+	if default_icon:
+		insert_button.icon = default_icon
+	if not default_asset_name.is_empty():
+		asset_name_label.text = default_asset_name
+	if not default_status_label.is_empty():
+		_set_status(default_status_label, 0.0)
+	else:
+		_set_status("Idle", 0.0)
+
+func _connect_music_editor_signals() -> void:
+	if music_editor and music_editor.has_signal("asset_selected"):
+		if not music_editor.asset_selected.is_connected(_on_asset_selected):
+			music_editor.asset_selected.connect(_on_asset_selected)
 
 func _on_asset_selected(config_key: String, display_name: String) -> void:
 	print("[AssetInputEntry] Asset selected: %s (%s)" % [display_name, config_key])
@@ -101,16 +118,20 @@ func _on_file_selected(path: String) -> void:
 		print("[AssetInputEntry] Error: No project loaded")
 		return
 	
-	# Set output path in project data directory
+	# Set output paths in project data directory
 	current_output_file = data_path + "/" + config_key + ".wav"
-	print("[AssetInputEntry] Output path: ", current_output_file)
+	current_output_mp3 = data_path + "/" + config_key + ".mp3"
+	print("[AssetInputEntry] WAV output path: ", current_output_file)
+	print("[AssetInputEntry] MP3 output path: ", current_output_mp3)
 	
 	if extension == "wav":
 		# No conversion needed, just copy to project
 		print("[AssetInputEntry] WAV file detected, copying to project")
 		_copy_file_to_project(path, current_output_file)
+		# Also convert to MP3 for game
+		_start_mp3_conversion(current_output_file)
 	else:
-		# Need to convert
+		# Need to convert to WAV first
 		print("[AssetInputEntry] Non-WAV file detected, starting conversion")
 		_start_conversion(path)
 
@@ -182,16 +203,10 @@ func _check_conversion_status() -> void:
 		progress_timer = null
 		
 		if exit_code == 0:
-			# Success
-			_set_status("Saving", 90.0)
+			# Success - convert to MP3 for game
+			_set_status("Converting to MP3", 95.0)
 			await get_tree().process_frame
-			_set_status("Idle", 100.0)
-			_update_paths(current_input_file, current_output_file)
-			_update_asset_label()
-			
-			# Clean up progress file
-			if FileAccess.file_exists(progress_file_path):
-				DirAccess.remove_absolute(progress_file_path)
+			_start_mp3_conversion(current_output_file)
 		else:
 			# Error
 			_set_status("Error: Conversion failed", 0.0)
@@ -324,3 +339,48 @@ func _copy_file_to_project(source: String, dest: String) -> void:
 	else:
 		_set_status("Error: Failed to copy file", 0.0)
 		push_error("Failed to copy file: %s" % error)
+
+func _start_mp3_conversion(wav_path: String) -> void:
+	print("[AssetInputEntry] Starting MP3 conversion from: ", wav_path)
+	
+	var args = [
+		"-i", wav_path,
+		"-y",
+		"-f", "mp3",
+		"-acodec", "libmp3lame",
+		"-ar", "44100",
+		"-ac", "2",
+		"-b:a", "192k",
+		"-map_metadata", "-1",
+		"-loglevel", "error",
+		current_output_mp3
+	]
+	
+	print("[AssetInputEntry] MP3 conversion args: ", args)
+	
+	var mp3_process = OS.create_process("ffmpeg", args)
+	print("[AssetInputEntry] MP3 conversion process ID: ", mp3_process)
+	
+	if mp3_process == -1:
+		_set_status("Error: Failed to start MP3 conversion", 0.0)
+		push_error("Failed to start MP3 conversion process")
+		return
+	
+	# Wait for process to complete
+	while OS.get_process_exit_code(mp3_process) == -1:
+		await get_tree().process_frame
+	
+	var exit_code = OS.get_process_exit_code(mp3_process)
+	print("[AssetInputEntry] MP3 conversion exit code: ", exit_code)
+	
+	if exit_code == 0:
+		_set_status("Idle", 100.0)
+		_update_paths(current_input_file, current_output_file)
+		_update_asset_label()
+		print("[AssetInputEntry] MP3 conversion complete")
+		# Trigger waveform update by emitting asset_selected signal
+		if music_editor and music_editor.has_signal("asset_selected"):
+			music_editor.asset_selected.emit(config_key, asset_name_label.text)
+	else:
+		_set_status("Error: MP3 conversion failed", 0.0)
+		push_error("MP3 conversion failed with code: %d" % exit_code)

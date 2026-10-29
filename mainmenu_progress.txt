@@ -1,0 +1,9 @@
+bitrate=1411.2kbits/s
+total_size=22726734
+out_time_us=128835918
+out_time_ms=128835918
+out_time=00:02:08.835918
+dup_frames=0
+drop_frames=0
+speed= 912x
+progress=end

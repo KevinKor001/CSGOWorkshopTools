@@ -14,6 +14,9 @@ offset_bottom = -570.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_script")
+default_icon = ExtResource("1_0jtmg")
+default_asset_name = "<Asset Name>"
+default_status_label = "Idle"
 
 [node name="Panel" type="Panel" parent="." unique_id=732629302]
 layout_mode = 1

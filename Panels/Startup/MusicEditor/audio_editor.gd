@@ -464,6 +464,11 @@ func _on_asset_selected(config_key: String, display_name: String) -> void:
 	
 	current_config_key = config_key
 	
+	# Clear UI fields before loading new track to prevent carryover from previous track
+	track_start_point.text = ""
+	track_end_point.text = ""
+	this_sync_point_time.text = ""
+	
 	# Get music editor reference
 	var music_editor = $"../../../.."
 	var data_path = music_editor.get_data_path()
@@ -518,6 +523,10 @@ func _on_asset_selected(config_key: String, display_name: String) -> void:
 			audio_player.seek(current_time)
 		_update_playhead_from_time()
 		_update_clock_label()
+		
+		# If end point wasn't set in config, set it to total duration now that we know it
+		if track_end_point.text.is_empty():
+			track_end_point.text = _format_config_time(total_duration)
 		
 		print("[AudioEditor] Successfully loaded: ", wav_path)
 		print("[AudioEditor] Data size: ", audio_stream.data.size())
@@ -606,9 +615,10 @@ func _load_track_config(data_path: String, config_key: String) -> void:
 	has_priority = not priority.is_empty()
 	has_priority_override = not priority_override.is_empty()
 	
-	# Set UI values
+	# Set UI values - use defaults if config values are empty
 	track_start_point.text = start_point if not start_point.is_empty() else "0.0"
-	track_end_point.text = end_point if not end_point.is_empty() else str(total_duration)
+	# Don't use total_duration as fallback yet since audio hasn't loaded
+	track_end_point.text = end_point if not end_point.is_empty() else ""
 	priority_spinbox.value = priority.to_int() if not priority.is_empty() else 2
 	priority_override_check.button_pressed = (priority_override == "true")
 	lock_start_enabled = false
@@ -646,7 +656,7 @@ func _parse_config_value(section: String, key: String) -> String:
 
 func _set_default_track_config() -> void:
 	track_start_point.text = "0.0"
-	track_end_point.text = str(total_duration)
+	track_end_point.text = ""  # Will be set to total_duration after audio loads
 	priority_spinbox.value = 2
 	priority_override_check.button_pressed = false
 	lock_start_enabled = false

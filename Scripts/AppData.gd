@@ -95,14 +95,18 @@ func _get_windows_steam_library_folders(steam_root: String) -> Array:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Start with command line argument if provided
 	gameDir = ArgParser.csgo_dir
+
 	var config = ConfigFile.new()
 	var config_path = getToolConfigPath()
 	print("loading from "+ config_path)
 	var load_result = config.load(config_path)
 
 	if load_result == OK:
-		gameDir = config.get_value("General", "csgo_install", "")
+		# Only use config value if command line argument wasn't provided
+		if gameDir.is_empty():
+			gameDir = config.get_value("General", "csgo_install", "")
 		IsSupramacyInstall = config.get_value("General", "supremacy_install", false)
 		launchGameEnabled = config.get_value("General", "launch_game", true)
 		disableGameCommunication = config.get_value("General", "disable_communication", false)
@@ -111,6 +115,8 @@ func _ready() -> void:
 		protonPrefix = config.get_value("Linux", "ProtonPrefix", "")
 	else:
 		print("Config file not found or failed to load: ", config_path)
+
+	print("Final gameDir: ", gameDir)
 
 	
 

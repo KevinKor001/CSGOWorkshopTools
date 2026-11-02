@@ -316,6 +316,22 @@ func create_music_project(project_dir: String) -> void:
 	var csgo_dir = AppData.gameDir
 	print("Base CSGO dir from AppData: ", csgo_dir)
 
+	# Validate CSGO path
+	if csgo_dir.is_empty():
+		push_error("ERROR: CSGO directory is not configured. Please set it in settings.")
+		return
+
+	# Check if path is absolute
+	var is_absolute = false
+	if OS.get_name() == "Windows":
+		is_absolute = csgo_dir.length() >= 2 and csgo_dir[1] == ":"
+	else:
+		is_absolute = csgo_dir.begins_with("/")
+
+	if not is_absolute:
+		push_error("ERROR: CSGO path is not absolute: " + csgo_dir)
+		return
+
 	if use_supremacy:
 		csgo_dir = csgo_dir + "/SupremacyRenewed/csgo"
 		print("Using Supremacy path: ", csgo_dir)
@@ -411,9 +427,26 @@ func get_csgo_path() -> String:
 
 func get_custom_music_path() -> String:
 	var csgo_path = get_csgo_path()
-	if not csgo_path.is_empty():
-		return csgo_path + "/sound/music/custom_01"
-	return ""
+	if csgo_path.is_empty():
+		print("[MusicEditor] ERROR: csgo_path is empty in project config")
+		return ""
+
+	# Check if path is absolute (starts with / on Linux or C:\ on Windows)
+	var is_absolute = false
+	if OS.get_name() == "Windows":
+		is_absolute = csgo_path.length() >= 2 and csgo_path[1] == ":"
+	else:
+		is_absolute = csgo_path.begins_with("/")
+
+	if not is_absolute:
+		print("[MusicEditor] ERROR: csgo_path is not absolute: ", csgo_path)
+		return ""
+
+	# Normalize path separators
+	if OS.get_name() == "Windows":
+		csgo_path = csgo_path.replace("/", "\\")
+
+	return csgo_path + "/sound/music/custom_01"
 
 func get_manifest_path() -> String:
 	return get_custom_music_path() + "/manifest"

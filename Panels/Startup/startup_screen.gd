@@ -5,7 +5,14 @@ func checkInstalation():
 	if ArgParser.csgo_dir != "":
 		gamedir = ArgParser.csgo_dir
 	else:
-		gamedir = "."
+		# Try to auto-detect CSGO path
+		var detected_path = AppData.detectCSGOPath()
+		if detected_path != "":
+			print("Auto-detected CSGO path: ", detected_path)
+			gamedir = detected_path
+			ArgParser.csgo_dir = detected_path
+		else:
+			gamedir = "."
 
 	
 	if "CSP_Data" in DirAccess.get_directories_at(gamedir):
@@ -53,3 +60,7 @@ func _on_button_config_pressed() -> void:
 	$SetingsWindow.show()
 	
 	
+
+
+func _on_setings_window_close_requested() -> void:
+	$SetingsWindow.hide()

@@ -789,6 +789,7 @@ expand_mode = 5
 
 [node name="FileDialog" type="FileDialog" parent="." unique_id=1132478033]
 display_mode = 1
+access = 2
 use_native_dialog = true
 
 [node name="PopUp" parent="." unique_id=358554546 instance=ExtResource("16_5f0eb")]

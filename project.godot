@@ -29,6 +29,10 @@ window/size/viewport_height=720
 window/subwindows/embed_subwindows=false
 window/stretch/aspect="expand"
 
+[editor]
+
+run/main_run_args="-csgo_dir \"E:\\SteamLibrary\\steamapps\\common\\csgo legacy\""
+
 [gui]
 
 theme/custom="uid://bl4p6k0r1ofc6"

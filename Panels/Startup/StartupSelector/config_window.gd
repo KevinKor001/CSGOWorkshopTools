@@ -3,6 +3,10 @@ extends Window
 @onready var _file_dialog = $FileDialog
 @onready var _proton_options = $Panel/ScrollContainer/VBoxContainer/SelectProton/ProtonOptions
 @onready var _prefix_path = $Panel/ScrollContainer/VBoxContainer/SelectProtonPrefix/Path
+@onready var _launch_game_checkbox = $Panel/ScrollContainer/VBoxContainer/CheckBox
+@onready var _fullscreen_checkbox = $Panel/ScrollContainer/VBoxContainer/CheckBox2
+@onready var _launch_args = $Panel/ScrollContainer/VBoxContainer/LineEdit
+@onready var _disable_comm_checkbox = $Panel/ScrollContainer/VBoxContainer/CheckBox3
 
 var _proton_installations: Array = []
 
@@ -14,22 +18,29 @@ func _ready() -> void:
 	detect_proton_installations()
 	_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
 	_file_dialog.dir_selected.connect(_on_prefix_folder_selected)
+	_load_settings()
 
 func detect_proton_installations() -> void:
 	_proton_installations.clear()
 	_proton_options.clear()
 	
-	# Common Steam Proton paths
-	var flatpak_path = OS.get_environment("HOME")
-	flatpak_path += "/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d"
+	var steam_paths = []
 	
-	var steam_paths = [
-		OS.get_environment("HOME") + "/.steam/steam/compatibilitytools.d",
-		OS.get_environment("HOME") + "/.local/share/Steam/compatibilitytools.d",
-		OS.get_environment("HOME") + "/.steam/root/compatibilitytools.d",
-		"/usr/share/steam/compatibilitytools.d",
-		flatpak_path,
-	]
+	if OS.get_name() == "Windows":
+		# Windows doesn't use Proton, but we check anyway for future compatibility
+		steam_paths = []
+	else:
+		# Linux Steam Proton paths
+		var flatpak_path = OS.get_environment("HOME")
+		flatpak_path += "/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d"
+		
+		steam_paths = [
+			OS.get_environment("HOME") + "/.steam/steam/compatibilitytools.d",
+			OS.get_environment("HOME") + "/.local/share/Steam/compatibilitytools.d",
+			OS.get_environment("HOME") + "/.steam/root/compatibilitytools.d",
+			"/usr/share/steam/compatibilitytools.d",
+			flatpak_path,
+		]
 	
 	for path in steam_paths:
 		if DirAccess.dir_exists_absolute(path):
@@ -84,13 +95,26 @@ func detect_proton_installations() -> void:
 			_proton_options.set_item_metadata(_proton_options.get_item_count() - 1, proton_path)
 
 func _find_steam_root() -> String:
-	var possible_paths = [
-		OS.get_environment("HOME") + "/.steam/steam",
-		OS.get_environment("HOME") + "/.local/share/Steam",
-		OS.get_environment("HOME") + "/.steam/root",
-		"/usr/share/steam",
-		"/var/lib/steam",
-	]
+	var possible_paths = []
+	
+	if OS.get_name() == "Windows":
+		# Windows Steam paths
+		possible_paths = [
+			OS.get_environment("ProgramFiles(x86)") + "/Steam",
+			OS.get_environment("ProgramFiles") + "/Steam",
+			OS.get_environment("ProgramW6432") + "/Steam",
+			"C:/Program Files (x86)/Steam",
+			"C:/Program Files/Steam",
+		]
+	else:
+		# Linux Steam paths
+		possible_paths = [
+			OS.get_environment("HOME") + "/.steam/steam",
+			OS.get_environment("HOME") + "/.local/share/Steam",
+			OS.get_environment("HOME") + "/.steam/root",
+			"/usr/share/steam",
+			"/var/lib/steam",
+		]
 	
 	for path in possible_paths:
 		if DirAccess.dir_exists_absolute(path):
@@ -140,7 +164,33 @@ func _on_prefix_folder_selected(dir: String) -> void:
 	print("Selected prefix folder: ", dir)
 
 
-func _on_save_pressed() -> void:
+func _load_settings() -> void:
+	var config_path = AppData.getToolConfigPath()
+	var config = ConfigFile.new()
+	var load_result = config.load(config_path)
+	
+	if load_result == OK:
+		# Load general settings
+		_launch_game_checkbox.button_pressed = config.get_value("General", "launch_game", true)
+		_fullscreen_checkbox.button_pressed = config.get_value("General", "fullscreen", false)
+		_launch_args.text = config.get_value("General", "launch_args", "")
+		_disable_comm_checkbox.button_pressed = config.get_value("General", "disable_communication", false)
+		
+		# Load Linux settings
+		var proton_path = config.get_value("Linux", "ProtonPath", "")
+		var prefix_path = config.get_value("Linux", "ProtonPrefix", "")
+		
+		# Set proton prefix path
+		_prefix_path.text = prefix_path
+		
+		# Find and select the proton option
+		if not proton_path.is_empty():
+			for i in range(_proton_installations.size()):
+				if _proton_installations[i] == proton_path:
+					_proton_options.selected = i
+					break
+
+func _save_settings() -> void:
 	var config_path = AppData.getToolConfigPath()
 	print("Saving config to: ", config_path)
 	
@@ -164,6 +214,14 @@ func _on_save_pressed() -> void:
 	
 	var config = ConfigFile.new()
 	config.load(config_path)
+	
+	# Save general settings
+	config.set_value("General", "launch_game", _launch_game_checkbox.button_pressed)
+	config.set_value("General", "fullscreen", _fullscreen_checkbox.button_pressed)
+	config.set_value("General", "launch_args", _launch_args.text)
+	config.set_value("General", "disable_communication", _disable_comm_checkbox.button_pressed)
+	
+	# Save Linux settings
 	config.set_value("Linux", "ProtonPath", str(current_proton_path))
 	config.set_value("Linux", "ProtonPrefix", str(current_prefix_path))
 	
@@ -172,3 +230,7 @@ func _on_save_pressed() -> void:
 		push_error("Failed to save config: ", error)
 	else:
 		print("Config saved successfully")
+
+func _on_save_pressed() -> void:
+	_save_settings()
+	hide()

@@ -143,7 +143,7 @@ func _start_conversion(input_path: String) -> void:
 	
 	_set_status("Starting ffmpeg", 0.0)
 	
-	# Build ffmpeg command for Linux - output directly to project data directory
+	# Build ffmpeg command - output directly to project data directory
 	# Use WAV container with PCM 16-bit for Godot compatibility
 	var args = [
 		"-i", input_path,
@@ -161,7 +161,9 @@ func _start_conversion(input_path: String) -> void:
 	print("[AssetInputEntry] FFmpeg args: ", args)
 	
 	# Start ffmpeg process
-	conversion_process = OS.create_process("ffmpeg", args)
+	var ffmpeg_path = AppData.getFFmpegPath()
+	print("[AssetInputEntry] FFmpeg path: ", ffmpeg_path)
+	conversion_process = OS.create_process(ffmpeg_path, args)
 	print("[AssetInputEntry] Conversion process ID: ", conversion_process)
 	
 	if conversion_process == -1:
@@ -362,7 +364,9 @@ func _start_mp3_conversion(wav_path: String) -> void:
 	
 	print("[AssetInputEntry] MP3 conversion args: ", args)
 	
-	var mp3_process = OS.create_process("ffmpeg", args)
+	var ffmpeg_path = AppData.getFFmpegPath()
+	print("[AssetInputEntry] FFmpeg path: ", ffmpeg_path)
+	var mp3_process = OS.create_process(ffmpeg_path, args)
 	print("[AssetInputEntry] MP3 conversion process ID: ", mp3_process)
 	
 	if mp3_process == -1:

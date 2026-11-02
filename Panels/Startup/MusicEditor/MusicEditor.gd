@@ -58,6 +58,11 @@ func _hide_startup_overlay() -> void:
 	startup_overlay.hide()
 
 func _begin_game_ready_check() -> void:
+	if AppData.disableGameCommunication:
+		print("Game communication disabled in settings, skipping ready check")
+		_hide_startup_overlay()
+		return
+
 	if game_ready_check_active or current_project_path.is_empty():
 		return
 	game_ready_check_active = true
@@ -188,27 +193,59 @@ func setup_musicKit_tree(tree : Tree):
 
 
 func open_game():
+	if not AppData.launchGameEnabled:
+		print("Game launch is disabled in settings")
+		return
+
 	if not _ensure_custom_music_directory():
 		push_error("Cannot launch game: custom_01 music directory is unavailable")
 		return
 	print("Game launch Sequence")
 
 	var exe_path = AppData.gameDir + "/csgo.exe"
-	
+
 	# Check if project is loaded and uses supremacy
 	if not current_project_path.is_empty() and is_supremacy():
 		exe_path = AppData.gameDir + "/SupremacyRenewed/csgo.exe"
 		print("Launching Supremacy version: ", exe_path)
-	
-	var args = ["-netconport", "2121", "-windowed -w 1280 -h 720", "-novid", "-nojoy", "-insecure", "+name", "Dev", "-offline"]
-	var proton_path = AppData.protonPath
-	var prefix_path = AppData.protonPrefix
-	
-	if proton_path.is_empty() or prefix_path.is_empty():
-		push_error("Proton path or prefix not configured in settings")
-		return
-	
-	GameManager.launch_with_proton(exe_path, args, proton_path, prefix_path)
+
+	# Normalize path separators for Windows
+	if OS.get_name() == "Windows":
+		exe_path = exe_path.replace("/", "\\")
+
+	var args = ["-netconport", "2121", "-windowed", "-w", "1280", "-h", "720", "-novid", "-nojoy", "-insecure", "+name", "Dev", "-offline"]
+
+	# On Windows, launch directly without Proton
+	if OS.get_name() == "Windows":
+		print("Launching directly on Windows: ", exe_path)
+
+		# Try OS.create_process first (for actual exes)
+		var pid = OS.create_process(exe_path, args)
+		if pid != -1:
+			print("Game launched successfully. PID: ", pid)
+		else:
+			# Fallback to shell_open (works with shortcuts)
+			print("OS.create_process failed, trying shell_open (may be a shortcut)")
+			var full_cmd = '"' + exe_path + '" ' + " ".join(args)
+			var error = OS.shell_open(full_cmd)
+			if error == OK:
+				print("Game launched via shell_open")
+			else:
+				push_error("Failed to launch game on Windows via both methods")
+	else:
+		# On Linux, check if exe exists before launching
+		if not FileAccess.file_exists(exe_path):
+			push_error("Game executable not found: " + exe_path)
+			return
+
+		var proton_path = AppData.protonPath
+		var prefix_path = AppData.protonPrefix
+
+		if proton_path.is_empty() or prefix_path.is_empty():
+			push_error("Proton path or prefix not configured in settings")
+			return
+
+		GameManager.launch_with_proton(exe_path, args, proton_path, prefix_path)
 
 func _ensure_custom_music_directory() -> bool:
 	var custom_music_path: String = get_custom_music_path()
@@ -616,19 +653,33 @@ func generate_game_sounds_music_template(output_path: String) -> void:
 	if not template_file:
 		print("[MusicEditor] Failed to create game_sounds_music.txt")
 		return
-	
+
 	# Copy from the sample file
 	var sample_path = "res://data/game_sounds_music.txt"
+	var content = ""
+
 	if FileAccess.file_exists(sample_path):
 		var sample_file = FileAccess.open(sample_path, FileAccess.READ)
 		if sample_file:
-			var content = sample_file.get_as_text()
+			content = sample_file.get_as_text()
 			sample_file.close()
-			template_file.store_string(content)
 			print("[MusicEditor] Generated game_sounds_music.txt from template")
 	else:
-		print("[MusicEditor] Sample file not found, creating empty file")
-	
+		# Fallback: try to get from the running directory (for exports)
+		var exe_dir = OS.get_executable_path().get_base_dir()
+		var fallback_path = exe_dir + "/data/game_sounds_music.txt"
+		if FileAccess.file_exists(fallback_path):
+			var sample_file = FileAccess.open(fallback_path, FileAccess.READ)
+			if sample_file:
+				content = sample_file.get_as_text()
+				sample_file.close()
+				print("[MusicEditor] Generated game_sounds_music.txt from fallback path")
+		else:
+			# Create a minimal default template
+			print("[MusicEditor] Sample file not found, creating minimal template")
+			content = '"Music.HalfTime.custom_01"\n{\n\t"channel"\t "CHAN_STATIC"\n\t"volume"\t "0.800"\n\t"soundlevel" "SNDLVL_NONE"\n\t"pitch"\t\t "PITCH_NORM"\n\n\t"wave"\t"*music/custom_01/mainmenu.mp3"\n\n\n\t"soundentry_version" "2"\n\t"operator_stacks"\n\t{\n\t\t"start_stack"\n\t\t{\n\t\t\t"stop_music"\n\t\t\t{\n\t\t\t\t"operator" "sys_stop_entries"\n\t\t\t\t"input_max_entries" "0.000000"\n\t\t\t\t"match_entity" "false"\t\n\t\t\t\t"match_substring" "true"\n\t\t\t\t"match_this_entry" "false"\n\t\t\t\t"match_entry" "Music."\t\n\t\t\t}\n\t\t}\n\t}\n}'
+
+	template_file.store_string(content)
 	template_file.close()
 
 func _populate_game_music_sounds() -> void:
@@ -685,15 +736,24 @@ func _populate_game_music_sounds() -> void:
 
 func _on_open_external_editor_pressed(file_path: String) -> void:
 	print("[MusicEditor] Opening file in external editor: ", file_path)
-	
-	# Use xdg-open on Linux to open the file with default application
-	var output = []
-	var exit_code = OS.execute("xdg-open", [file_path], output)
-	
-	if exit_code != 0:
-		print("[MusicEditor] Failed to open file, exit code: ", exit_code)
-		# Fallback: try opening the directory
-		OS.execute("xdg-open", [file_path.get_base_dir()], output)
+
+	# Use platform-specific method to open file
+	if OS.get_name() == "Windows":
+		# On Windows, use OS.shell_open which uses the default application
+		var error = OS.shell_open(file_path)
+		if error != OK:
+			print("[MusicEditor] Failed to open file via shell_open, error: ", error)
+			# Fallback: try opening the directory
+			OS.shell_open(file_path.get_base_dir())
+	else:
+		# On Linux, use xdg-open
+		var output = []
+		var exit_code = OS.execute("xdg-open", [file_path], output)
+
+		if exit_code != 0:
+			print("[MusicEditor] Failed to open file, exit code: ", exit_code)
+			# Fallback: try opening the directory
+			OS.execute("xdg-open", [file_path.get_base_dir()], output)
 
 func _on_go_to_track_pressed(entry_name: String) -> void:
 	print("[MusicEditor] Go to track pressed for: ", entry_name)
@@ -768,12 +828,17 @@ func hot_reload_to_game() -> void:
 	
 	dir.list_dir_end()
 	print("[MusicEditor] === Hot Reload Complete ===")
-	
+
 	# Send commands to game via PortalInterface
+	if AppData.disableGameCommunication:
+		print("[MusicEditor] Game communication disabled in settings, skipping hot reload commands")
+		await _hide_preview_overlay_after_minimum()
+		return
+
 	print("[MusicEditor] Sending commands to game...")
 	var interface = PortalInterface.new("127.0.0.1", 2121)
 	add_child(interface)
-	
+
 	var commands_sent = false
 	preview_echo_confirmed = false
 	var preview_marker = "MUSIC_EDITOR_PREVIEW_%d" % Time.get_ticks_msec()
@@ -789,17 +854,17 @@ func hot_reload_to_game() -> void:
 		interface.disconnect_from_server()
 		interface.queue_free()
 	)
-	
+
 	interface.connect_to_server(1, 0.5)
 	await get_tree().create_timer(2.0).timeout
-	
+
 	if is_instance_valid(interface):
 		interface.queue_free()
-	
+
 	if not commands_sent:
 		print("[MusicEditor] Game not running or connection failed, commands not sent")
 		await _hide_preview_overlay_after_minimum()
-	elif not preview_echo_confirmed:
+	if not preview_echo_confirmed:
 		await get_tree().create_timer(2.0).timeout
 		_hide_startup_overlay()
 
@@ -821,51 +886,52 @@ func cleanup_on_editor_close() -> void:
 	if not AppData.cleanupOnClose:
 		print("[MusicEditor] Cleanup disabled in AppData, skipping")
 		return
-	
+
 	print("[MusicEditor] === Starting Cleanup on Editor Close ===")
-	
-	# Send quit command to game via PortalInterface
-	var interface = PortalInterface.new("127.0.0.1", 2121)
-	add_child(interface)
-	
-	var connection_success = false
-	interface.connected.connect(func():
-		print("[MusicEditor] Connected to game, sending quit command")
-		connection_success = true
-		interface.send_command("quit")
-		await get_tree().create_timer(0.5).timeout
-		interface.disconnect_from_server()
-		interface.queue_free()
-	)
-	
-	interface.connect_to_server(1, 0.5)
-	await get_tree().create_timer(2.0).timeout
-	
-	# Clean up interface if connection failed
-	if is_instance_valid(interface):
-		interface.queue_free()
-	
-	if not connection_success:
-		print("[MusicEditor] Game not running or connection failed, skipping quit command")
-	
+
+	# Send quit command to game via PortalInterface (if communication is enabled)
+	if not AppData.disableGameCommunication:
+		var interface = PortalInterface.new("127.0.0.1", 2121)
+		add_child(interface)
+
+		var connection_success = false
+		interface.connected.connect(func():
+			print("[MusicEditor] Connected to game, sending quit command")
+			connection_success = true
+			interface.send_command("quit")
+			await get_tree().create_timer(0.5).timeout
+			interface.disconnect_from_server()
+			interface.queue_free()
+		)
+
+		interface.connect_to_server(1, 0.5)
+		await get_tree().create_timer(2.0).timeout
+
+		# Clean up interface if connection failed
+		if is_instance_valid(interface):
+			interface.queue_free()
+
+		if not connection_success:
+			print("[MusicEditor] Game not running or connection failed, skipping quit command")
+
 	# Delete custom_01 directory or just files inside
 	var custom_music_path = get_custom_music_path()
 	if custom_music_path.is_empty():
 		print("[MusicEditor] No project loaded, skipping cleanup")
 		return
-	
+
 	if DirAccess.dir_exists_absolute(custom_music_path):
 		var dir = DirAccess.open(custom_music_path)
 		if dir:
 			# Delete all files and directories inside custom_01
 			dir.list_dir_begin()
 			var file_name = dir.get_next()
-			
+
 			while file_name != "":
 				var full_path = custom_music_path + "/" + file_name
 				if dir.current_is_dir():
-					# Remove directory recursively
-					var err = dir.remove_recursive(file_name)
+					# Remove directory recursively using absolute path
+					var err = DirAccess.remove_absolute(full_path)
 					if err != OK:
 						print("[MusicEditor] Error removing directory %s: %d" % [file_name, err])
 				else:
@@ -873,9 +939,9 @@ func cleanup_on_editor_close() -> void:
 					var err = dir.remove(file_name)
 					if err != OK:
 						print("[MusicEditor] Error removing file %s: %d" % [file_name, err])
-				
+
 				file_name = dir.get_next()
-			
+
 			dir.list_dir_end()
 			
 			# Remove the directory itself

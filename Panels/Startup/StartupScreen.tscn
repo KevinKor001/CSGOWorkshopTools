@@ -227,3 +227,4 @@ visible = false
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer2/Button2" to="." method="_on_button_config_pressed"]
 [connection signal="pressed" from="Panel/MissingSDK/InstallToolchain" to="Panel/MissingSDK/InstallToolchain" method="_on_pressed"]
 [connection signal="pressed" from="Panel/MissingSDK/InstallToolchain2" to="Panel/MissingSDK/InstallToolchain2" method="_on_pressed_minimal"]
+[connection signal="close_requested" from="SetingsWindow" to="." method="_on_setings_window_close_requested"]

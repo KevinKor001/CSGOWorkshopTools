@@ -47,7 +47,8 @@ func connect_to_server(max_retries: int = 5, retry_delay: float = 2.0) -> void:
 				break
 		
 		# Check final status
-		_socket.poll()
+		if _socket:
+			_socket.poll()
 		if _socket and _socket.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 			_socket.set_no_delay(true)
 			_connected = true

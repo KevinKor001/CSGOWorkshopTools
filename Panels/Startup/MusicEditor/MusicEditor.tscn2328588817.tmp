@@ -1,0 +1,860 @@
+[gd_scene format=3 uid="uid://d0jbnl6147w31"]
+
+[ext_resource type="Script" uid="uid://btlpl6b0jqc5t" path="res://Panels/Startup/MusicEditor/MusicEditor.gd" id="1_c6fyd"]
+[ext_resource type="Texture2D" uid="uid://dvmkg4ak2m51a" path="res://icons/cd_add.png" id="2_4aasx"]
+[ext_resource type="Texture2D" uid="uid://3cp5beypyfan" path="res://icons/hammer.png" id="2_dc3uq"]
+[ext_resource type="Texture2D" uid="uid://bbfghgor7c63x" path="res://icons/cd_edit.png" id="3_iv5r2"]
+[ext_resource type="Texture2D" uid="uid://cubk4vx5ag22v" path="res://icons/cog_edit.png" id="4_b2mwd"]
+[ext_resource type="Texture2D" uid="uid://ce68wq533xm7p" path="res://icons/bricks.png" id="4_eg354"]
+[ext_resource type="FontFile" uid="uid://bq6g3j27xbx3v" path="res://Fonts/Segoe UI Bold Italic.ttf" id="5_wcrae"]
+[ext_resource type="Script" uid="uid://cqkpt4v20qrj5" path="res://Panels/Startup/MusicEditor/preview.gd" id="6_hajql"]
+[ext_resource type="Script" uid="uid://d0oiqsx10efg1" path="res://Panels/Startup/MusicEditor/WaveformRenderer.gd" id="8_wcrae"]
+[ext_resource type="Script" uid="uid://dd1qqqul7gdxw" path="res://Panels/Startup/MusicEditor/audio_editor.gd" id="9_audio_editor"]
+[ext_resource type="FontFile" uid="uid://bdowbpsyxrs0p" path="res://Fonts/SpaceMono-Bold.ttf" id="11_3usyn"]
+[ext_resource type="AudioStream" uid="uid://cej4cy6feysap" path="res://silence.wav" id="11_5f0eb"]
+[ext_resource type="Texture2D" uid="uid://dqy16h2wwy4hp" path="res://icons/timeline_marker.png" id="12_4aetk"]
+[ext_resource type="FontFile" uid="uid://ws4k4pkhqhav" path="res://Fonts/SpaceMono-Italic.ttf" id="12_f3jre"]
+[ext_resource type="PackedScene" uid="uid://cn5q7m81s86kd" path="res://Panels/Startup/MusicEditor/UIItems/AssetInputEntry.tscn" id="15_ixc2r"]
+[ext_resource type="PackedScene" uid="uid://b1kfcuihmt78j" path="res://Panels/Startup/PopupOKWindow.tscn" id="16_5f0eb"]
+[ext_resource type="Texture2D" uid="uid://cnn06no82y4m7" path="res://icons/extension_jpg.png" id="16_32nnf"]
+[ext_resource type="Script" uid="uid://dn0a735mr7v8h" path="res://Panels/Startup/MusicEditor/sync_point_list.gd" id="17_sync_list"]
+[ext_resource type="Texture2D" uid="uid://dh1vy5sudbrfp" path="res://icons/keyboard-input-icons/key-ctrl-outlined.png" id="18_voo8n"]
+[ext_resource type="FontFile" uid="uid://cf1svpg7gfukx" path="res://Fonts/Segoe UI Bold.ttf" id="19_kh1qo"]
+[ext_resource type="Texture2D" uid="uid://d0186ph13cr70" path="res://icons/keyboard-input-icons/key-s-outlined.png" id="19_qd5oh"]
+[ext_resource type="Texture2D" uid="uid://c0pavm4mlwjso" path="res://icons/keyboard-input-icons/key-u-outlined.png" id="20_q4kku"]
+[ext_resource type="Texture2D" uid="uid://bfj0rsijhawwe" path="res://icons/point_090.png" id="20_xcs4v"]
+[ext_resource type="Texture2D" uid="uid://bqubsg1a32nxy" path="res://icons/keyboard-input-icons/key-e-outlined.png" id="21_3bc6y"]
+[ext_resource type="Texture2D" uid="uid://b17762gtjhht7" path="res://icons/keyboard-input-icons/key-del-outlined.png" id="22_x6g7w"]
+[ext_resource type="Texture2D" uid="uid://bet2aqsd3ja6t" path="res://icons/mouse-input-icons/mouse-left-outlined.png" id="23_760xr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x347m"]
+bg_color = Color(0.15127608, 0.15127608, 0.15127605, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2mwd"]
+bg_color = Color(0.1897483, 0.67189306, 0.1680183, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34407586, 0.34407574, 0.3440756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnrhv"]
+bg_color = Color(0.16924527, 0.1692453, 0.16924527, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dc3uq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fnca"]
+bg_color = Color(1, 1, 1, 0.771)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyrsl"]
+bg_color = Color(0.12955844, 0.1295585, 0.12955838, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8sdb"]
+bg_color = Color(0.11489678, 0.11489683, 0.11489671, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_voo8n"]
+bg_color = Color(0.19434929, 0.19434926, 0.19434926, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b32do"]
+bg_color = Color(0.06879827, 0.06879828, 0.06879828, 0.67058825)
+
+[sub_resource type="Gradient" id="Gradient_nws3h"]
+colors = PackedColorArray(1, 0, 0, 1, 1.176222, 1.8247963, 0.8269897, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xyrsl"]
+gradient = SubResource("Gradient_nws3h")
+
+[sub_resource type="Animation" id="Animation_kh1qo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TextureProgressBar:value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_xcs4v"]
+resource_name = "loading"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TextureProgressBar:value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.3922923, 0.3922923),
+"update": 0,
+"values": [0.0, 100.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_voo8n"]
+_data = {
+&"RESET": SubResource("Animation_kh1qo"),
+&"loading": SubResource("Animation_xcs4v")
+}
+
+[node name="Control" type="Control" unique_id=971279008]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_c6fyd")
+packageConfigIcon = ExtResource("2_dc3uq")
+
+[node name="Panel" type="Panel" parent="." unique_id=1981125819]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1745697141]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer" unique_id=2049253038]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x347m")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel" unique_id=1170228408]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NewMusicProject" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1896928089]
+custom_minimum_size = Vector2(58, 0)
+layout_mode = 2
+text = "New "
+icon = ExtResource("2_4aasx")
+alignment = 0
+expand_icon = true
+
+[node name="OpenProject" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=992996292]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Open"
+icon = ExtResource("3_iv5r2")
+alignment = 0
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1517789814]
+layout_mode = 2
+
+[node name="Test" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=1478631810]
+custom_minimum_size = Vector2(107.345, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "TEST BUTTON"
+icon = ExtResource("4_b2mwd")
+alignment = 0
+expand_icon = true
+
+[node name="NewMusicKit4" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=2078102865]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Settings"
+icon = ExtResource("4_b2mwd")
+alignment = 0
+expand_icon = true
+
+[node name="Preview" type="Button" parent="Panel/VBoxContainer/Panel/HBoxContainer" unique_id=875177805]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_fonts/font = ExtResource("5_wcrae")
+theme_override_styles/normal = SubResource("StyleBoxFlat_b2mwd")
+text = "Preview"
+icon = ExtResource("4_eg354")
+alignment = 0
+expand_icon = true
+script = ExtResource("6_hajql")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Panel/VBoxContainer" unique_id=1534197971]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(-225)
+split_offset = -225
+
+[node name="AssetPanel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=236613349]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer/HSplitContainer/AssetPanel" unique_id=997512244]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AssetPanel/ScrollContainer" unique_id=1101072073]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Tree" type="Tree" parent="Panel/VBoxContainer/HSplitContainer/AssetPanel/ScrollContainer/VBoxContainer" unique_id=1063665100]
+layout_mode = 2
+size_flags_vertical = 3
+column_titles_visible = true
+
+[node name="AudioEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=1421632424]
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("9_audio_editor")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor" unique_id=341524788]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=650196244]
+layout_mode = 2
+text = "Track Inspector"
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=1965832684]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qnrhv")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel" unique_id=258312485]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer" unique_id=1563099894]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch_mode = 4
+script = ExtResource("8_wcrae")
+audio_stream = ExtResource("11_5f0eb")
+waveform_color = Color(0.8611158, 0.48500007, 1.92523e-07, 1)
+background_color = Color(0.043039158, 0.04303915, 0.04303915, 1)
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect" unique_id=1193938098]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dc3uq")
+
+[node name="StartTrackTime" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=318078963]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("11_3usyn")
+text = "00:00:00"
+
+[node name="TotalTrackTime" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=4717383]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -79.0
+offset_top = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("11_3usyn")
+text = "00:00:00E"
+
+[node name="Playhead" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/Panel/ScrollContainer/TextureRect/Panel" unique_id=2132660864]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_right = 66.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3fnca")
+
+[node name="ToolBar" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=2034742015]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Play" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1810906608]
+layout_mode = 2
+text = "Play"
+
+[node name="Pause" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1227327195]
+layout_mode = 2
+text = "Pause"
+
+[node name="top" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1658666641]
+layout_mode = 2
+text = "Stop"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=638551343]
+layout_mode = 2
+
+[node name="AddSyncPoint" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=624137188]
+layout_mode = 2
+text = "Add Sync Point"
+
+[node name="RemoveSyncPoint" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=112135890]
+layout_mode = 2
+text = "RemoveSyncPoint"
+
+[node name="Clock" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1484142940]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xyrsl")
+
+[node name="ClockLabel" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/Clock" unique_id=127784770]
+layout_mode = 1
+offset_top = -4.075
+offset_right = 108.0
+offset_bottom = 19.925
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "00:00:00.00"
+
+[node name="SyncPointTimer" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/Clock" unique_id=511165812]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.8333335, 0, 1, 1)
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "00:00:00.00"
+vertical_alignment = 2
+
+[node name="SyncPointMode" type="TextureRect" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/Clock" unique_id=1152237747]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.5
+offset_top = -7.5
+offset_right = 7.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_4aetk")
+
+[node name="InfoPanel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=2102951604]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xyrsl")
+
+[node name="ClockLabel" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/InfoPanel" unique_id=383509968]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "<FileName>"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SyncPointTimer" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/InfoPanel" unique_id=1005332626]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.70000815, 0, 1)
+theme_override_fonts/font = ExtResource("12_f3jre")
+theme_override_font_sizes/font_size = 16
+text = "SyncPoint #x | y "
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="yncPointMode" type="TextureRect" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar/InfoPanel" unique_id=1632633066]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.5
+offset_top = -7.5
+offset_right = 7.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_4aetk")
+
+[node name="VSeparator2" type="VSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=1480718110]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/ToolBar" unique_id=2146343112]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save Config"
+
+[node name="AssetInputEntry" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=270181167 instance=ExtResource("15_ixc2r")]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+default_icon = null
+default_asset_name = ""
+default_status_label = ""
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=569617346]
+layout_mode = 2
+
+[node name="TrackConfig" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer" unique_id=2011851610]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig" unique_id=1600455984]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Data" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel" unique_id=374356001]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1812091794]
+layout_mode = 2
+text = "Track priority"
+
+[node name="Priority" type="SpinBox" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=733018916]
+layout_mode = 2
+
+[node name="PriorityOverride" type="CheckBox" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=2030464255]
+layout_mode = 2
+text = "priority_override"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1294208802]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1003764345]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer" unique_id=1986548607]
+layout_mode = 2
+text = "Track Start Point"
+
+[node name="LockEndToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer" unique_id=313429259]
+layout_mode = 2
+toggle_mode = true
+text = "Lock to Playhead"
+
+[node name="SetStartToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer" unique_id=357997597]
+layout_mode = 2
+text = "Set to Playhead"
+
+[node name="TrackStartPoint" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1185814811]
+layout_mode = 2
+placeholder_text = "0.000000"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=167161413]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer2" unique_id=671256948]
+layout_mode = 2
+text = "Track End Point"
+
+[node name="LockEndToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer2" unique_id=670147196]
+layout_mode = 2
+toggle_mode = true
+text = "Lock to Playhead"
+
+[node name="SetEndToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer2" unique_id=827835250]
+layout_mode = 2
+text = "Set to Playhead"
+
+[node name="TrackEndPoint" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=125680535]
+layout_mode = 2
+placeholder_text = "0.000000"
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1440940910]
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=1047889918]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer3" unique_id=291002134]
+layout_mode = 2
+text = "[x] Sync point queue "
+
+[node name="LockSyncPointToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer3" unique_id=2050713085]
+layout_mode = 2
+toggle_mode = true
+text = "Lock to Playhead"
+
+[node name="SetSyncPointToPlayhead" type="Button" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data/HBoxContainer3" unique_id=2143881466]
+layout_mode = 2
+text = "Set to Playhead"
+
+[node name="ThisSyncPointTime" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig/Panel/Data" unique_id=920755428]
+layout_mode = 2
+placeholder_text = "0.000000"
+
+[node name="SyncPointList" type="Tree" parent="Panel/VBoxContainer/HSplitContainer/AudioEditor/VBoxContainer/TrackConfig" unique_id=819483193]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("17_sync_list")
+
+[node name="ConfigEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=498461100]
+visible = false
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor" unique_id=740387489]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PackageConfig" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer" unique_id=1814332358]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=196247487]
+layout_mode = 2
+text = "Music Kit Name"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=820862812]
+layout_mode = 2
+placeholder_text = "Epic Cool Musisk Kit"
+
+[node name="CoverArtInput" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=1216688391 instance=ExtResource("15_ixc2r")]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+default_icon = ExtResource("16_32nnf")
+default_asset_name = "Album cover art"
+default_status_label = "Idle - Empty"
+
+[node name="game_music_sounds" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer" unique_id=1556411024]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Config Path" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=380580092]
+visible = false
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r8sdb")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path" unique_id=118068812]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConfigPath" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path/HBoxContainer" unique_id=696913673]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "<Path>"
+
+[node name="OpenConfigFile" type="Button" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path/HBoxContainer" unique_id=222340940]
+layout_mode = 2
+text = "Open Config file"
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=885432000]
+layout_mode = 2
+text = "Music Kit Name"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=1499818344]
+layout_mode = 2
+placeholder_text = "Epic Cool Musisk Kit"
+
+[node name="Panel2" type="Panel" parent="Panel/VBoxContainer" unique_id=1044304998]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_voo8n")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel2" unique_id=2045565282]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=880558680]
+layout_mode = 2
+text = "Help Bar :"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=1420805800]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=675815089]
+custom_minimum_size = Vector2(152.395, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control" unique_id=1516107783]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control/HBoxContainer" unique_id=1861749170]
+layout_mode = 2
+text = "Save "
+
+[node name="TextureRect" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control/HBoxContainer" unique_id=2060791263]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("18_voo8n")
+expand_mode = 5
+
+[node name="Label3" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control/HBoxContainer" unique_id=380793010]
+layout_mode = 2
+text = "+"
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control/HBoxContainer" unique_id=1674551841]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("19_qd5oh")
+expand_mode = 5
+
+[node name="Control4" type="Control" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=920765952]
+custom_minimum_size = Vector2(216.455, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control4" unique_id=1861537316]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control4/HBoxContainer" unique_id=719033596]
+layout_mode = 2
+text = "UploadToGame"
+
+[node name="TextureRect" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control4/HBoxContainer" unique_id=859374621]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("18_voo8n")
+expand_mode = 5
+
+[node name="Label3" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control4/HBoxContainer" unique_id=758406059]
+layout_mode = 2
+text = "+"
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control4/HBoxContainer" unique_id=1154326493]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("20_q4kku")
+expand_mode = 5
+
+[node name="Control2" type="Control" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=2120947330]
+custom_minimum_size = Vector2(170.62, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control2" unique_id=1397447750]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control2/HBoxContainer" unique_id=469245251]
+layout_mode = 2
+text = "NewSyncPoint"
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control2/HBoxContainer" unique_id=2116522657]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("21_3bc6y")
+expand_mode = 5
+
+[node name="Control3" type="Control" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=590187384]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control3" unique_id=1903086895]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control3/HBoxContainer" unique_id=390865890]
+layout_mode = 2
+text = "DeleteSyncPoint"
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control3/HBoxContainer" unique_id=512155579]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("22_x6g7w")
+expand_mode = 5
+
+[node name="Control5" type="Control" parent="Panel/VBoxContainer/Panel2/HBoxContainer" unique_id=1122157605]
+custom_minimum_size = Vector2(216.455, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control5" unique_id=998115610]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control5/HBoxContainer" unique_id=1926397818]
+layout_mode = 2
+text = "ManipulateSyncPoint"
+
+[node name="TextureRect" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control5/HBoxContainer" unique_id=1124834628]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("18_voo8n")
+expand_mode = 5
+
+[node name="Label3" type="Label" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control5/HBoxContainer" unique_id=207269085]
+layout_mode = 2
+text = "+"
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/VBoxContainer/Panel2/HBoxContainer/Control5/HBoxContainer" unique_id=307586430]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture = ExtResource("23_760xr")
+expand_mode = 5
+
+[node name="FileDialog" type="FileDialog" parent="." unique_id=1132478033]
+display_mode = 1
+access = 2
+use_native_dialog = true
+
+[node name="PopUp" parent="." unique_id=358554546 instance=ExtResource("16_5f0eb")]
+visible = false
+
+[node name="Panel2" type="Panel" parent="." unique_id=34365575]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 29.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b32do")
+
+[node name="Label" type="Label" parent="Panel2" unique_id=636544552]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 43
+text = "Waiting For game Instance .... plz hold"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="Panel2" unique_id=1592129526]
+layout_mode = 0
+offset_left = 593.0
+offset_top = 504.0
+offset_right = 633.0
+offset_bottom = 544.0
+fill_mode = 4
+texture_progress = SubResource("GradientTexture2D_xyrsl")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Panel2" unique_id=128212836]
+libraries/ = SubResource("AnimationLibrary_voo8n")
+
+[node name="LoadAProject" type="Control" parent="Panel2" unique_id=918108776]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label2" type="Label" parent="Panel2/LoadAProject" unique_id=1217053867]
+layout_mode = 0
+offset_left = 181.0
+offset_top = 55.0
+offset_right = 1014.0
+offset_bottom = 132.0
+theme_override_fonts/font = ExtResource("19_kh1qo")
+theme_override_font_sizes/font_size = 57
+text = "Create / Load A project first !!!!
+(or nothing will happen)"
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/LoadAProject" unique_id=463607490]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 88.0
+texture = ExtResource("20_xcs4v")
+
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/NewMusicProject" to="." method="_on_new_music_kit_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/OpenProject" to="." method="_on_open_project_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Panel/HBoxContainer/Preview" to="." method="hot_reload_to_game"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="custom_action" from="PopUp" to="." method="_on_popup_custom_button"]

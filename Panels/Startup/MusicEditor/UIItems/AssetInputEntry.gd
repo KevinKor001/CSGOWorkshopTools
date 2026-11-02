@@ -350,8 +350,12 @@ func _start_mp3_conversion(wav_path: String) -> void:
 		"-acodec", "libmp3lame",
 		"-ar", "44100",
 		"-ac", "2",
-		"-b:a", "192k",
+		# Keep the MP3 profile compatible with the game's legacy audio loader.
+		"-b:a", "128k",
 		"-map_metadata", "-1",
+		"-id3v2_version", "0",
+		"-write_id3v1", "0",
+		"-write_xing", "0",
 		"-loglevel", "error",
 		current_output_mp3
 	]

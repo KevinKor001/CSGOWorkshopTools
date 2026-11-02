@@ -34,6 +34,14 @@ window/stretch/aspect="expand"
 theme/custom="uid://bl4p6k0r1ofc6"
 theme/custom_font="uid://onby7kvxwbwa"
 
+[music_editor]
+
+sync_point_color_start=Color(1, 0, 0.9500003, 1)
+sync_point_color_end=Color(0, 1, 0.16666651, 1)
+sync_point_alpha=0.588235
+sync_point_hover_alpha=0.969
+sync_point_near_distance=100.0
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

@@ -9,6 +9,10 @@ var config = ConfigFile.new()
 @onready var config_editor = $Panel/VBoxContainer/HSplitContainer/ConfigEditor
 @onready var package_config = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig
 @onready var game_music_sounds = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds
+@onready var startup_overlay: Panel = $Panel2
+@onready var overlay_label: Label = $Panel2/Label
+@onready var loading_animation: AnimationPlayer = $Panel2/AnimationPlayer
+@onready var load_project_prompt: Control = $Panel2/LoadAProject
 
 signal asset_selected(config_key: String, display_name: String)
 
@@ -17,11 +21,15 @@ var use_supremacy = false
 var current_project_path = ""
 var project_config = ConfigFile.new()
 var game_sounds_entries: Array = []
+var game_ready_check_active: bool = false
+var ready_echo_counter: int = 0
+var ready_echo_confirmation: String = ""
+var preview_echo_confirmed: bool = false
+var preview_overlay_started_msec: int = 0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	setupWindow()
-	#await get_tree().create_timer(20).timeout
-	$Panel2.hide()
+	_show_startup_overlay(current_project_path.is_empty())
 	setup_musicKit_tree(tree)
 	
 	# Connect tree selection signal
@@ -34,6 +42,55 @@ func _ready() -> void:
 	
 	# Connect to node exiting signal for cleanup
 	tree_exiting.connect(cleanup_on_editor_close)
+
+func _show_startup_overlay(show_load_project: bool) -> void:
+	startup_overlay.show()
+	load_project_prompt.visible = show_load_project
+	if show_load_project:
+		overlay_label.hide()
+		loading_animation.stop()
+	else:
+		overlay_label.show()
+		loading_animation.play("loading")
+
+func _hide_startup_overlay() -> void:
+	loading_animation.stop()
+	startup_overlay.hide()
+
+func _begin_game_ready_check() -> void:
+	if game_ready_check_active or current_project_path.is_empty():
+		return
+	game_ready_check_active = true
+	_show_startup_overlay(false)
+	while game_ready_check_active and not current_project_path.is_empty():
+		if await _send_ready_echo_once():
+			_hide_startup_overlay()
+			game_ready_check_active = false
+			return
+		await get_tree().create_timer(1.0).timeout
+
+func _send_ready_echo_once() -> bool:
+	ready_echo_counter += 1
+	var marker := "MUSIC_EDITOR_READY_%d" % ready_echo_counter
+	ready_echo_confirmation = ""
+	var interface := PortalInterface.new("127.0.0.1", 2121)
+	add_child(interface)
+	interface.message_received.connect(_on_ready_echo_message.bind(marker))
+	interface.connected.connect(func():
+		interface.send_command("echo " + marker)
+	)
+	await interface.connect_to_server(1, 0.5)
+	var start_time := Time.get_ticks_msec()
+	while ready_echo_confirmation != marker and Time.get_ticks_msec() - start_time < 2000:
+		await get_tree().process_frame
+	if is_instance_valid(interface):
+		interface.disconnect_from_server()
+		interface.queue_free()
+	return ready_echo_confirmation == marker
+
+func _on_ready_echo_message(line: String, marker: String) -> void:
+	if line.contains(marker):
+		ready_echo_confirmation = marker
 
 func _on_tree_item_selected() -> void:
 	var selected = tree.get_selected()
@@ -131,7 +188,9 @@ func setup_musicKit_tree(tree : Tree):
 
 
 func open_game():
-	
+	if not _ensure_custom_music_directory():
+		push_error("Cannot launch game: custom_01 music directory is unavailable")
+		return
 	print("Game launch Sequence")
 
 	var exe_path = AppData.gameDir + "/csgo.exe"
@@ -150,6 +209,22 @@ func open_game():
 		return
 	
 	GameManager.launch_with_proton(exe_path, args, proton_path, prefix_path)
+
+func _ensure_custom_music_directory() -> bool:
+	var custom_music_path: String = get_custom_music_path()
+	if custom_music_path.is_empty():
+		return false
+	var result: Error = DirAccess.make_dir_recursive_absolute(custom_music_path)
+	if result != OK and not DirAccess.dir_exists_absolute(custom_music_path):
+		print("Failed to create custom_01 directory: ", custom_music_path, " error: ", result)
+		return false
+	var manifest_path: String = custom_music_path + "/manifest"
+	var manifest_result: Error = DirAccess.make_dir_recursive_absolute(manifest_path)
+	if manifest_result != OK and not DirAccess.dir_exists_absolute(manifest_path):
+		print("Failed to create manifest directory: ", manifest_path, " error: ", manifest_result)
+		return false
+	print("custom_01 directory ready: ", custom_music_path)
+	return true
 
 
 func _on_audio_editor_resized() -> void:
@@ -260,29 +335,17 @@ func load_project(project_path: String) -> bool:
 			print("game_sounds_music.txt not found, generating from template")
 			generate_game_sounds_music_template(gsm_path)
 		
-		# Recreate custom_01 directory
-		var custom_music_path = get_custom_music_path()
-		if not custom_music_path.is_empty():
-			if not DirAccess.dir_exists_absolute(custom_music_path):
-				print("Recreating custom_01 directory: ", custom_music_path)
-				var csgo_path = get_csgo_path()
-				var dir = DirAccess.open(csgo_path)
-				if dir:
-					dir.make_dir_recursive("sound/music/custom_01")
-					print("custom_01 directory recreated")
-					
-					# Also recreate manifest directory
-					var manifest_path = custom_music_path + "/manifest"
-					if not DirAccess.dir_exists_absolute(manifest_path):
-						DirAccess.make_dir_absolute(manifest_path)
-						print("manifest directory recreated")
-				else:
-					print("Failed to open CSGO directory for recreation")
-			else:
-				print("custom_01 directory already exists")
+		# The game mounts this directory during startup, so it must exist first.
+		if not _ensure_custom_music_directory():
+			print("Project loaded, but game launch skipped because custom_01 could not be created")
+			return false
+		_show_startup_overlay(false)
 		open_game()
+		_begin_game_ready_check()
 		return true
 	print("Failed to load project from: ", config_path)
+	current_project_path = ""
+	_show_startup_overlay(true)
 	return false
 
 func save_project() -> bool:
@@ -326,7 +389,8 @@ func get_data_path() -> String:
 func save_track_config(config_key: String, start_point: String, end_point: String,
 		priority: int, priority_override: bool, save_start_point: bool = true,
 		save_end_point: bool = true, save_priority: bool = true,
-		save_priority_override: bool = true) -> bool:
+		save_priority_override: bool = true, sync_points: Array = [],
+		save_sync_points: bool = false) -> bool:
 	var data_path = get_data_path()
 	if data_path.is_empty():
 		print("[MusicEditor] No project loaded, cannot save track config")
@@ -365,9 +429,11 @@ func save_track_config(config_key: String, start_point: String, end_point: Strin
 			section = _set_or_insert_config_value(section, "priority", str(priority))
 		if save_priority_override:
 			section = _set_or_insert_config_value(section, "priority_override", "true" if priority_override else "false")
+		if save_sync_points:
+			section = _set_or_insert_sync_points(section, sync_points)
 		content = content.substr(0, track_data_start) + section + content.substr(track_data_end + 1)
 	else:
-		if not save_start_point and not save_end_point and not save_priority and not save_priority_override:
+		if not save_start_point and not save_end_point and not save_priority and not save_priority_override and not save_sync_points:
 			print("[MusicEditor] Track has no editable track config fields: ", config_key)
 			return true
 		var operator_data_start = content.find('"soundentry_operator_data"', entry_start)
@@ -389,7 +455,10 @@ func save_track_config(config_key: String, start_point: String, end_point: Strin
 			fields += "\n\t\t\t\t\"priority\" \"%d\"" % priority
 		if save_priority_override:
 			fields += "\n\t\t\t\t\"priority_override\" \"%s\"" % ("true" if priority_override else "false")
-		var new_data = "\n\t\t\t\"track_data\"\n\t\t\t{" + fields + "\n\t\t\t}"
+		var sync_fields = ""
+		if save_sync_points:
+			sync_fields = "\n" + _format_sync_points(sync_points)
+		var new_data = "\n\t\t\t\"track_data\"\n\t\t\t{" + fields + sync_fields + "\n\t\t\t}"
 		if operator_data_start == -1:
 			new_data = "\n\t\t\"soundentry_operator_data\"\n\t\t{" + new_data + "\n\t\t}"
 		content = content.substr(0, insert_at) + new_data + content.substr(insert_at)
@@ -401,6 +470,28 @@ func save_track_config(config_key: String, start_point: String, end_point: Strin
 	output.close()
 	print("[MusicEditor] Saved track config for: ", config_key)
 	return true
+
+func _set_or_insert_sync_points(section: String, sync_points: Array) -> String:
+	var syncpoints_text := _format_sync_points(sync_points)
+	var syncpoints_start := section.find('"syncpoints"')
+	if syncpoints_start != -1:
+		var syncpoints_end := _find_braced_section_end(section, syncpoints_start)
+		if syncpoints_end != -1:
+			return section.substr(0, syncpoints_start) + syncpoints_text + section.substr(syncpoints_end + 1)
+	var closing_brace := section.rfind("}")
+	if closing_brace == -1:
+		return section
+	return section.substr(0, closing_brace) + "\n" + syncpoints_text + "\n\t" + section.substr(closing_brace)
+
+func _format_sync_points(sync_points: Array) -> String:
+	var output := "\t\t\t\t\"syncpoints\"\n\t\t\t\t{\n"
+	output += "\t\t\t\t\t\"syncpoints_1\"\n\t\t\t\t\t{\n"
+	for index in mini(sync_points.size(), 32):
+		var point = sync_points[index]
+		var time: float = point["time"] if point is Dictionary else float(point)
+		output += "\t\t\t\t\t\t\"%d\" \"%.6f\"\n" % [index, maxf(time, 0.0)]
+	output += "\t\t\t\t\t}\n\t\t\t\t}"
+	return output
 
 func _replace_config_value(section: String, key: String, value: String) -> String:
 	var regex = RegEx.new()
@@ -611,6 +702,13 @@ func _on_go_to_track_pressed(entry_name: String) -> void:
 # Hot Reload Functions
 func hot_reload_to_game() -> void:
 	print("[MusicEditor] === Starting Hot Reload ===")
+	preview_overlay_started_msec = Time.get_ticks_msec()
+	_show_startup_overlay(current_project_path.is_empty())
+	if audio_editor.visible and audio_editor.has_method("save_current_track_config"):
+		if not audio_editor.save_current_track_config():
+			print("[MusicEditor] Preview cancelled: active track config could not be saved")
+			_hide_startup_overlay()
+			return
 	
 	# Get paths
 	var data_path = get_data_path()
@@ -618,6 +716,7 @@ func hot_reload_to_game() -> void:
 	
 	if data_path.is_empty() or custom_music_path.is_empty():
 		print("[MusicEditor] Error: Project not loaded or CSGO path not set")
+		_hide_startup_overlay()
 		return
 	
 	var source_gsm = data_path + "/game_sounds_music.txt"
@@ -625,12 +724,14 @@ func hot_reload_to_game() -> void:
 	
 	if not FileAccess.file_exists(source_gsm):
 		print("[MusicEditor] Error: game_sounds_music.txt not found in project")
+		_hide_startup_overlay()
 		return
 	
 	# Copy game_sounds_music.txt to custom_01 (no processing needed, keep .mp3)
 	var dest_file = FileAccess.open(dest_gsm, FileAccess.WRITE)
 	if not dest_file:
 		print("[MusicEditor] Error: Failed to open destination file")
+		_hide_startup_overlay()
 		return
 	
 	var source_file = FileAccess.open(source_gsm, FileAccess.READ)
@@ -645,6 +746,7 @@ func hot_reload_to_game() -> void:
 	var dir = DirAccess.open(data_path)
 	if not dir:
 		print("[MusicEditor] Error: Failed to open data directory")
+		_hide_startup_overlay()
 		return
 	
 	dir.list_dir_begin()
@@ -673,9 +775,13 @@ func hot_reload_to_game() -> void:
 	add_child(interface)
 	
 	var commands_sent = false
+	preview_echo_confirmed = false
+	var preview_marker = "MUSIC_EDITOR_PREVIEW_%d" % Time.get_ticks_msec()
+	interface.message_received.connect(_on_preview_echo_message.bind(preview_marker))
 	interface.connected.connect(func():
 		print("[MusicEditor] Connected to game, sending commands")
 		commands_sent = true
+		interface.send_command("echo " + preview_marker)
 		interface.send_command("sv_cheats 1")
 		await get_tree().create_timer(0.2).timeout
 		interface.send_command("snd_restart")
@@ -692,6 +798,23 @@ func hot_reload_to_game() -> void:
 	
 	if not commands_sent:
 		print("[MusicEditor] Game not running or connection failed, commands not sent")
+		await _hide_preview_overlay_after_minimum()
+	elif not preview_echo_confirmed:
+		await get_tree().create_timer(2.0).timeout
+		_hide_startup_overlay()
+
+func _on_preview_echo_message(line: String, marker: String) -> void:
+	if not line.contains(marker) or preview_echo_confirmed:
+		return
+	preview_echo_confirmed = true
+	await _hide_preview_overlay_after_minimum()
+
+func _hide_preview_overlay_after_minimum() -> void:
+	var elapsed := Time.get_ticks_msec() - preview_overlay_started_msec
+	var remaining := 2000 - elapsed
+	if remaining > 0:
+		await get_tree().create_timer(float(remaining) / 1000.0).timeout
+	_hide_startup_overlay()
 
 # Cleanup Functions
 func cleanup_on_editor_close() -> void:

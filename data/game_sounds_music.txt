@@ -1,4 +1,4 @@
-"Musix.HalfTime.custom_01"
+"Music.HalfTime.custom_01"
 {
 	"channel"	 "CHAN_STATIC"
 	"volume"	 "0.800"
@@ -34,7 +34,7 @@
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
 			{
-			    "convar" "snd_menumusic_volume"
+				"convar" "snd_menumusic_volume"
 			}
 			"volume_fade_out"
 			{
@@ -83,8 +83,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_menumusic_volume"
+			{
+				"convar" "snd_menumusic_volume"
 			}
 			"volume_fade_out"
 			{
@@ -220,15 +220,15 @@
 			"import_stack" "CS_update_music_stereo"
 			"start_time_opvar"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"host_time"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"elapsed_roundtime"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"volume_fade_in"
 			{
@@ -239,8 +239,8 @@
 				"input" "@elapsed_roundtime.output"
 			}
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundstart_volume"
+			{
+				"convar" "snd_roundstart_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -326,15 +326,15 @@
 			"import_stack" "CS_update_music_stereo"
 			"start_time_opvar"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"host_time"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"elapsed_roundtime"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"volume_fade_in"
 			{
@@ -345,8 +345,8 @@
 				"input" "@elapsed_roundtime.output"
 			}
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundstart_volume"
+			{
+				"convar" "snd_roundstart_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -438,8 +438,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundstart_volume"
+			{
+				"convar" "snd_roundstart_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -499,8 +499,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundstart_volume"
+			{
+				"convar" "snd_roundstart_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -629,15 +629,15 @@
 			"import_stack" "CS_update_music_stereo"
 			"start_time_opvar"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"host_time"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"elapsed_roundtime"
 			{
-			    "input_execute" "1.0"
+				"input_execute" "1.0"
 			}
 			"volume_fade_in"
 			{
@@ -648,8 +648,8 @@
 				"input" "@elapsed_roundtime.output"
 			}
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundstart_volume"
+			{
+				"convar" "snd_roundstart_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -703,8 +703,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_mapobjective_volume"
+			{
+				"convar" "snd_mapobjective_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -739,7 +739,7 @@
 			"track_data"
 			{
 
-			    "start_point" "0.000000"
+				"start_point" "0.000000"
 				"track_name" "main"
 				"priority" "3"	
 			}
@@ -761,8 +761,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_tensecondwarning_volume"
+			{
+				"convar" "snd_tensecondwarning_volume"
 			}
 			"volume_fade_out"
 			{
@@ -799,7 +799,7 @@
 		}
 		"start_stack"
 		{
-		    "import_stack" "CS_start_sync_to_spectate"
+			"import_stack" "CS_start_sync_to_spectate"
 		
 			"block_entries"
 			{
@@ -817,8 +817,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_mapobjective_volume"
+			{
+				"convar" "snd_mapobjective_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -862,7 +862,7 @@
 			"track_data"
 			{
 
-			    "start_point" "0.000000"
+				"start_point" "0.000000"
 				"track_name" "main"
 				"priority" "3"	
 			}
@@ -887,8 +887,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_tensecondwarning_volume"
+			{
+				"convar" "snd_tensecondwarning_volume"
 			}
 			"volume_fade_initial"
 			{
@@ -931,7 +931,7 @@
 		{
 			"track_data"
 			{
-			    "start_point" "0.01"
+				"start_point" "0.01"
 				"track_name" "main"
 				"priority" "3"	
 			}
@@ -952,8 +952,8 @@
 		{
 			"import_stack" "CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_tensecondwarning_volume"
+			{
+				"convar" "snd_tensecondwarning_volume"
 			}
 			"volume_fade_out"
 			{
@@ -1034,8 +1034,8 @@
 		{
 			"import_stack"	"CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundend_volume"
+			{
+				"convar" "snd_roundend_volume"
 			}
 			"volume_fade_out"
 			{
@@ -1123,8 +1123,8 @@
 		{
 			"import_stack"	"CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_roundend_volume"
+			{
+				"convar" "snd_roundend_volume"
 			}
 			"volume_fade_out"
 			{
@@ -1166,8 +1166,8 @@
 		{
 			"import_stack"	"CS_update_music_stereo"
 			"snd_cuevolume_convar"
-		    {
-			    "convar" "snd_deathcamera_volume"
+			{
+				"convar" "snd_deathcamera_volume"
 			}
 			"mixer"
 			{
@@ -1288,7 +1288,7 @@
 			"import_stack"	"CS_update_music_stereo"
 			"snd_cuevolume_convar"
 			{
-			    "convar" "snd_roundend_volume"
+				"convar" "snd_roundend_volume"
 			}
 			"volume_fade_out"
 			{
@@ -1306,4 +1306,3 @@
 		}
 	}
 }
-

@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://frun4twg5xcm"]
+
+[ext_resource type="Script" uid="uid://bbfrduqgc5v5t" path="res://Panels/Startup/MusicEditor/sync_point_line.gd" id="1_s13jb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mik4o"]
+bg_color = Color(0.6375, 1, 0.25, 0.80784315)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wcrae"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="SyncPoint" type="Panel" unique_id=891592321]
+custom_minimum_size = Vector2(15, 0)
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_mik4o")
+script = ExtResource("1_s13jb")
+
+[node name="Panel" type="Panel" parent="." unique_id=1805410437]
+custom_minimum_size = Vector2(2.5, 0)
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wcrae")
+
+[node name="Label" type="Label" parent="." unique_id=49513415]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "     #S00"

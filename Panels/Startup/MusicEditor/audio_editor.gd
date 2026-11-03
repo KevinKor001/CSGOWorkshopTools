@@ -110,12 +110,27 @@ func _ready() -> void:
 	var music_editor = $"../../../.."
 	music_editor.asset_selected.connect(_on_asset_selected)
 	
+	# Set up keyboard shortcuts
+	set_process_unhandled_key_input(true)
+	
 	# Load audio from waveform renderer
 	if waveform.audio_stream:
 		audio_player.stream = waveform.audio_stream
 		total_duration = waveform.audio_stream.get_length()
 		_update_total_time_label()
 	_refresh_sync_point_ui()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_E:
+			# E - Add sync point
+			_on_add_sync_point_pressed()
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_DELETE or event.keycode == KEY_BACKSPACE:
+			# Delete/Backspace - Remove selected sync point
+			if selected_sync_point_index >= 0:
+				_on_remove_sync_point_pressed()
+				get_viewport().set_input_as_handled()
 
 func _process(_delta: float) -> void:
 	if is_playing and audio_player.playing:

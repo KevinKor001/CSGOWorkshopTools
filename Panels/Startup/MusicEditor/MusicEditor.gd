@@ -51,6 +51,33 @@ func _ready() -> void:
 	# Connect to node exiting signal for cleanup
 	tree_exiting.connect(cleanup_on_editor_close)
 
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.ctrl_pressed:
+			if event.keycode == KEY_S:
+				# Ctrl+S - Save everything
+				_on_save_shortcut()
+				get_viewport().set_input_as_handled()
+			elif event.keycode == KEY_U:
+				# Ctrl+U - Preview
+				_on_preview_shortcut()
+				get_viewport().set_input_as_handled()
+
+func _on_save_shortcut() -> void:
+	print("[MusicEditor] Ctrl+S - Save shortcut triggered")
+	
+	# Save project
+	if not current_project_path.is_empty():
+		save_project()
+	
+	# Save current track config if audio editor is visible
+	if audio_editor.visible and audio_editor.has_method("save_current_track_config"):
+		audio_editor.save_current_track_config()
+
+func _on_preview_shortcut() -> void:
+	print("[MusicEditor] Ctrl+U - Preview shortcut triggered")
+	hot_reload_to_game()
+
 func _show_startup_overlay(show_load_project: bool) -> void:
 	startup_overlay.show()
 	load_project_prompt.visible = show_load_project

@@ -1,0 +1,30 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    Made with CSGO Workshop Tools (CSWT)                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+This music kit was crafted with love, sweat, and questionable life choices.
+
+ ┌───────────────────────────────────────────────────────────────────────────┐
+ │  Tutorial: [COMING SOON - CHECK BACK LATER FOR EPIC LEARNING]             │
+ │  Showcase: [COMING SOON - YOUR KIT COULD BE FEATURED HERE]                │
+ └───────────────────────────────────────────────────────────────────────────┘
+
+Fun facts about this music kit:
+- It definitely has better taste than your ex's playlist
+- If you hear this in-game, someone has excellent taste (or is you)
+- No AI was harmed in the making of this music kit (probably)
+
+Remember to:
+- Share your creation with the community
+- Credit the original artists if you used samples
+- Don't blame CSWT if your music kit becomes too popular
+
+Made with CSGO Workshop Tools - Because i have too much free time... What is CSWT you ask?
+Well , take a look here:
+https://github.com/KevinKor001/CSGOWorkshopTools
+[LINK TO TUTORIAL - COMING SOON]
+[LINK TO SHOWCASE VIDEO - COMING SOON]
+
+Thanks for using CSWT! 
+
+PLEASE REPORT ANY BUGS YOU FIND!!! OR SUGGEST ANY NEW FEATURES !!! 

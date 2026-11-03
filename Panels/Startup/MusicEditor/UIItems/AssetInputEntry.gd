@@ -3,6 +3,8 @@ extends Control
 @export var default_icon: Texture2D
 @export var default_asset_name: String
 @export var default_status_label: String
+@export var skip_tree_selection: bool = false
+@export var file_mode: String = "audio"  # "audio" or "image"
 
 # UI Node references
 @onready var insert_button: Button = $Panel/HBoxContainer/Button
@@ -23,19 +25,52 @@ var music_editor: Node
 var config_key: String = ""
 var original_filename: String = ""
 
+func _find_music_editor_parent() -> Node:
+	var current = get_parent()
+	while current:
+		if current.has_method("get_data_path"):
+			return current
+		current = current.get_parent()
+	return null
+
 func _ready() -> void:
-	# Get reference to MusicEditor parent
-	music_editor = $"../../../../../.."
+	print("[AssetInputEntry] === _ready called ===")
+	print("[AssetInputEntry] default_asset_name: ", default_asset_name)
+	print("[AssetInputEntry] skip_tree_selection: ", skip_tree_selection)
+	print("[AssetInputEntry] file_mode: ", file_mode)
+	
+	# Get reference to MusicEditor parent by traversing up the tree
+	music_editor = _find_music_editor_parent()
+	
+	if not music_editor:
+		print("[AssetInputEntry] Warning: Could not find MusicEditor parent")
+	else:
+		print("[AssetInputEntry] Found MusicEditor parent")
 	
 	# Create file dialog
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	file_dialog.add_filter("*.wav;WAV Audio")
-	file_dialog.add_filter("*.mp3;MP3 Audio")
-	file_dialog.add_filter("*.mp4;MP4 Audio")
+	
+	# Set appropriate filters based on file_mode
+	if file_mode == "image":
+		# Image filters for album cover
+		print("[AssetInputEntry] Setting image filters")
+		file_dialog.add_filter("*.jpg;JPEG Image")
+		file_dialog.add_filter("*.jpeg;JPEG Image")
+		file_dialog.add_filter("*.png;PNG Image")
+		file_dialog.add_filter("*.webp;WebP Image")
+	else:
+		# Audio filters for music tracks
+		print("[AssetInputEntry] Setting audio filters")
+		file_dialog.add_filter("*.wav;WAV Audio")
+		file_dialog.add_filter("*.mp3;MP3 Audio")
+		file_dialog.add_filter("*.mp4;MP4 Audio")
+	
+	print("[AssetInputEntry] File dialog filters: ", file_dialog.filters)
 	file_dialog.file_selected.connect(_on_file_selected)
 	add_child(file_dialog)
+	print("[AssetInputEntry] File dialog added as child")
 	
 	# Connect button signal
 	insert_button.pressed.connect(_on_insert_button_pressed)
@@ -90,24 +125,46 @@ func _on_asset_selected(config_key: String, display_name: String) -> void:
 		print("[AssetInputEntry] No file found for this asset")
 
 func _on_insert_button_pressed() -> void:
-	print("[AssetInputEntry] Insert button pressed")
-	# Get selected tree item and config key
-	config_key = _get_selected_config_key()
-	print("[AssetInputEntry] Config key: ", config_key)
-	if config_key.is_empty():
-		_set_status("Error: No asset selected", 0.0)
-		print("[AssetInputEntry] Error: No asset selected")
-		return
+	print("[AssetInputEntry] === Insert button pressed ===")
+	print("[AssetInputEntry] skip_tree_selection: ", skip_tree_selection)
+	print("[AssetInputEntry] default_asset_name: ", default_asset_name)
 	
+	# Skip tree selection for album cover or other standalone files
+	if skip_tree_selection:
+		print("[AssetInputEntry] Skipping tree selection (standalone file mode)")
+		config_key = "albumcover"
+	else:
+		# Get selected tree item and config key
+		config_key = _get_selected_config_key()
+		print("[AssetInputEntry] Config key: ", config_key)
+		if config_key.is_empty():
+			_set_status("Error: No asset selected", 0.0)
+			print("[AssetInputEntry] Error: No asset selected")
+			return
+	
+	print("[AssetInputEntry] File dialog valid: ", file_dialog != null)
+	print("[AssetInputEntry] File dialog file_mode: ", file_dialog.file_mode)
+	print("[AssetInputEntry] File dialog filters: ", file_dialog.filters)
 	print("[AssetInputEntry] Showing file dialog")
 	file_dialog.show()
+	print("[AssetInputEntry] File dialog shown")
 
 func _on_file_selected(path: String) -> void:
 	print("[AssetInputEntry] File selected: ", path)
+	print("[AssetInputEntry] file_mode: ", file_mode)
 	current_input_file = path
 	original_filename = path.get_file()
 	var extension = path.get_extension().to_lower()
 	print("[AssetInputEntry] File extension: ", extension)
+	
+	# Handle image mode - just copy file without conversion
+	if file_mode == "image":
+		print("[AssetInputEntry] Image mode - copying file without conversion")
+		_copy_image_to_project(path)
+		return
+	
+	# Handle audio mode - convert to WAV/MP3
+	print("[AssetInputEntry] Audio mode - processing audio file")
 	
 	# Get project data path
 	var data_path = music_editor.get_data_path()
@@ -292,9 +349,21 @@ func _update_paths(_original_path: String, wav_path: String) -> void:
 func _update_asset_label() -> void:
 	asset_name_label.text = original_filename + " -> " + config_key
 
+func get_current_file_path() -> String:
+	return current_input_file
+
 func _get_selected_config_key() -> String:
 	print("[AssetInputEntry] Getting selected config key")
-	var tree = music_editor.tree
+	
+	if not music_editor:
+		print("[AssetInputEntry] Error: music_editor is null")
+		return ""
+	
+	var tree = music_editor.get("tree")
+	if not tree:
+		print("[AssetInputEntry] Error: music_editor does not have tree property")
+		return ""
+	
 	var selected = tree.get_selected()
 	print("[AssetInputEntry] Selected tree item: ", selected)
 	
@@ -341,6 +410,19 @@ func _copy_file_to_project(source: String, dest: String) -> void:
 	else:
 		_set_status("Error: Failed to copy file", 0.0)
 		push_error("Failed to copy file: %s" % error)
+
+func _copy_image_to_project(source: String) -> void:
+	print("[AssetInputEntry] Copying image to project")
+	_set_status("Copying", 50.0)
+	
+	# Store the original file path for export
+	current_input_file = source
+	
+	# Update UI to show the file is loaded
+	_update_paths(source, source)
+	_update_asset_label()
+	_set_status("Idle", 100.0)
+	print("[AssetInputEntry] Image copied successfully")
 
 func _start_mp3_conversion(wav_path: String) -> void:
 	print("[AssetInputEntry] Starting MP3 conversion from: ", wav_path)

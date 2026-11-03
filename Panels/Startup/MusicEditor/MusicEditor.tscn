@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://b1kfcuihmt78j" path="res://Panels/Startup/PopupOKWindow.tscn" id="16_5f0eb"]
 [ext_resource type="Texture2D" uid="uid://cnn06no82y4m7" path="res://icons/extension_jpg.png" id="16_32nnf"]
 [ext_resource type="Script" uid="uid://dn0a735mr7v8h" path="res://Panels/Startup/MusicEditor/sync_point_list.gd" id="17_sync_list"]
+[ext_resource type="Texture2D" uid="uid://cws83rdumopbk" path="res://icons/cd_go.png" id="18_3bc6y"]
 [ext_resource type="Texture2D" uid="uid://dh1vy5sudbrfp" path="res://icons/keyboard-input-icons/key-ctrl-outlined.png" id="18_voo8n"]
 [ext_resource type="FontFile" uid="uid://cf1svpg7gfukx" path="res://Fonts/Segoe UI Bold.ttf" id="19_kh1qo"]
 [ext_resource type="Texture2D" uid="uid://d0186ph13cr70" path="res://icons/keyboard-input-icons/key-s-outlined.png" id="19_qd5oh"]
@@ -580,6 +581,8 @@ layout_mode = 2
 default_icon = ExtResource("16_32nnf")
 default_asset_name = "Album cover art"
 default_status_label = "Idle - Empty"
+skip_tree_selection = true
+file_mode = "image"
 
 [node name="CheckBox" type="CheckBox" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=689734006]
 layout_mode = 2
@@ -591,6 +594,12 @@ placeholder_text = "myMusicKitClassName"
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=811493636]
 layout_mode = 2
+
+[node name="Button" type="Button" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=1757007321]
+custom_minimum_size = Vector2(0, 50.08)
+layout_mode = 2
+text = "Package Muisc Kit as Zip"
+icon = ExtResource("18_3bc6y")
 
 [node name="game_music_sounds" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer" unique_id=1556411024]
 visible = false
@@ -605,6 +614,9 @@ text = "Music Kit Name"
 [node name="LineEdit" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=1499818344]
 layout_mode = 2
 placeholder_text = "Epic Cool Musisk Kit"
+
+[node name="AlbumFileDialog" type="FileDialog" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor" unique_id=107159925]
+use_native_dialog = true
 
 [node name="Panel2" type="Panel" parent="Panel/VBoxContainer" unique_id=1044304998]
 custom_minimum_size = Vector2(0, 30)

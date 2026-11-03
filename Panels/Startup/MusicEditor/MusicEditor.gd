@@ -9,6 +9,11 @@ var config = ConfigFile.new()
 @onready var config_editor = $Panel/VBoxContainer/HSplitContainer/ConfigEditor
 @onready var package_config = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig
 @onready var game_music_sounds = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds
+@onready var music_kit_name_input = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig/LineEdit
+@onready var cover_art_entry = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig/CoverArtInput
+@onready var override_class_check = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig/CheckBox
+@onready var override_class_input = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig/LineEdit2
+@onready var export_button = $Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig/Button
 @onready var startup_overlay: Panel = $Panel2
 @onready var overlay_label: Label = $Panel2/Label
 @onready var loading_animation: AnimationPlayer = $Panel2/AnimationPlayer
@@ -39,6 +44,9 @@ func _ready() -> void:
 	var hot_reload_callable = Callable(self, "hot_reload_to_game")
 	if not preview_button.pressed.is_connected(hot_reload_callable):
 		preview_button.pressed.connect(hot_reload_callable)
+	
+	# Connect export button
+	export_button.pressed.connect(_on_export_button_pressed)
 	
 	# Connect to node exiting signal for cleanup
 	tree_exiting.connect(cleanup_on_editor_close)
@@ -915,6 +923,186 @@ func _hide_preview_overlay_after_minimum() -> void:
 	_hide_startup_overlay()
 
 # Cleanup Functions
+func _on_export_button_pressed() -> void:
+	print("[MusicEditor] Export button pressed")
+	
+	# Check if project is loaded
+	if current_project_path.is_empty():
+		print("[MusicEditor] Error: No project loaded")
+		push_error("No project loaded")
+		return
+	
+	# Get music kit name
+	var music_kit_name = music_kit_name_input.text.strip_edges()
+	if music_kit_name.is_empty():
+		print("[MusicEditor] Error: Music kit name is empty")
+		push_error("Music kit name is required")
+		return
+	
+	# Show file dialog for save location
+	file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	file_dialog.title = "Save Music Kit ZIP"
+	file_dialog.filters = PackedStringArray(["*.zip;ZIP Archive"])
+	file_dialog.current_file = music_kit_name + ".zip"
+	file_dialog.show()
+	
+	# Connect export handler (disconnect if already connected)
+	if file_dialog.file_selected.is_connected(_on_export_location_selected):
+		file_dialog.file_selected.disconnect(_on_export_location_selected)
+	file_dialog.file_selected.connect(_on_export_location_selected)
+
+func _on_export_location_selected(path: String) -> void:
+	print("[MusicEditor] Export location selected: ", path)
+	
+	# Disconnect export handler
+	file_dialog.file_selected.disconnect(_on_export_location_selected)
+	
+	# Start export process
+	_export_music_kit(path)
+
+func _export_music_kit(zip_path: String) -> void:
+	print("[MusicEditor] === Starting Music Kit Export ===")
+	
+	var data_path = get_data_path()
+	if data_path.is_empty():
+		print("[MusicEditor] Error: No data path")
+		push_error("Failed to get data path")
+		return
+	
+	# Create temporary directory for packaging
+	var temp_dir = OS.get_cache_dir() + "/csgo_music_kit_export_" + str(Time.get_ticks_msec())
+	print("[MusicEditor] Creating temp directory: ", temp_dir)
+	
+	var dir = DirAccess.open("/")
+	if not dir:
+		print("[MusicEditor] Error: Failed to open root directory")
+		push_error("Failed to open directory")
+		return
+	
+	# Create temp directory structure
+	var error = dir.make_dir_recursive(temp_dir)
+	if error != OK:
+		print("[MusicEditor] Error: Failed to create temp directory: ", error)
+		push_error("Failed to create temp directory")
+		return
+	
+	var custom_01_dir = temp_dir + "/custom_01"
+	dir.make_dir_recursive(custom_01_dir)
+	
+	# Copy MP3 files from data directory
+	var data_dir = DirAccess.open(data_path)
+	if not data_dir:
+		print("[MusicEditor] Error: Failed to open data directory")
+		push_error("Failed to open data directory")
+		return
+	
+	data_dir.list_dir_begin()
+	var file_name = data_dir.get_next()
+	var mp3_count = 0
+	
+	while file_name != "":
+		if file_name.ends_with(".mp3"):
+			var source_file = data_path + "/" + file_name
+			var dest_file = custom_01_dir + "/" + file_name
+			print("[MusicEditor] Copying MP3: ", file_name)
+			var copy_error = dir.copy(source_file, dest_file)
+			if copy_error == OK:
+				mp3_count += 1
+			else:
+				print("[MusicEditor] Error copying MP3: ", copy_error)
+		file_name = data_dir.get_next()
+	
+	data_dir.list_dir_end()
+	print("[MusicEditor] Copied %d MP3 files" % mp3_count)
+	
+	# Copy game_sounds_music.txt
+	var gsm_source = data_path + "/game_sounds_music.txt"
+	var gsm_dest = custom_01_dir + "/game_sounds_music.txt"
+	if FileAccess.file_exists(gsm_source):
+		print("[MusicEditor] Copying game_sounds_music.txt")
+		var gsm_error = dir.copy(gsm_source, gsm_dest)
+		if gsm_error != OK:
+			print("[MusicEditor] Error copying game_sounds_music.txt: ", gsm_error)
+	else:
+		print("[MusicEditor] Warning: game_sounds_music.txt not found")
+	
+	# Copy album cover if it exists
+	var cover_art_path = ""
+	if cover_art_entry and cover_art_entry.has_method("get_current_file_path"):
+		cover_art_path = cover_art_entry.get_current_file_path()
+	
+	if not cover_art_path.is_empty() and FileAccess.file_exists(cover_art_path):
+		print("[MusicEditor] Copying album cover: ", cover_art_path)
+		var cover_dest = temp_dir + "/albumcover" + cover_art_path.get_extension()
+		var cover_error = dir.copy(cover_art_path, cover_dest)
+		if cover_error != OK:
+			print("[MusicEditor] Error copying album cover: ", cover_error)
+	
+	# Copy MadeWithCSWT.txt
+	var made_with_source = "res://data/MadeWithCSWT.txt"
+	var made_with_dest = temp_dir + "/MadeWithCSWT.txt"
+	if FileAccess.file_exists(made_with_source):
+		print("[MusicEditor] Copying MadeWithCSWT.txt")
+		var made_with_error = dir.copy(made_with_source, made_with_dest)
+		if made_with_error != OK:
+			print("[MusicEditor] Error copying MadeWithCSWT.txt: ", made_with_error)
+	else:
+		print("[MusicEditor] Warning: MadeWithCSWT.txt not found, creating empty file")
+		var made_with_file = FileAccess.open(made_with_dest, FileAccess.WRITE)
+		if made_with_file:
+			made_with_file.close()
+	
+	# Create ZIP file
+	print("[MusicEditor] Creating ZIP file: ", zip_path)
+	_create_zip_from_directory(temp_dir, zip_path)
+	
+	# Cleanup temp directory
+	print("[MusicEditor] Cleaning up temp directory")
+	_remove_directory_recursive(temp_dir)
+	
+	print("[MusicEditor] === Export Complete ===")
+
+func _create_zip_from_directory(source_dir: String, zip_path: String) -> void:
+	# Use system zip command to create the archive
+	var args = []
+	
+	if OS.get_name() == "Windows":
+		# On Windows, use PowerShell Compress-Archive
+		args = ["-Command", "Compress-Archive -Path '" + source_dir + "/*' -DestinationPath '" + zip_path + "' -Force"]
+		var exit_code = OS.execute("powershell", args)
+		if exit_code != 0:
+			print("[MusicEditor] Error: PowerShell Compress-Archive failed with code: ", exit_code)
+			push_error("Failed to create ZIP on Windows")
+	else:
+		# On Linux, use shell to change directory and zip with relative paths
+		var shell_cmd = "cd '" + source_dir + "' && zip -r '" + zip_path + "' ."
+		args = ["-c", shell_cmd]
+		var exit_code = OS.execute("sh", args)
+		if exit_code != 0:
+			print("[MusicEditor] Error: zip command failed with code: ", exit_code)
+			push_error("Failed to create ZIP on Linux")
+
+func _remove_directory_recursive(dir_path: String) -> void:
+	var dir = DirAccess.open(dir_path)
+	if not dir:
+		return
+	
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	
+	while file_name != "":
+		var full_path = dir_path + "/" + file_name
+		if dir.current_is_dir():
+			_remove_directory_recursive(full_path)
+		else:
+			dir.remove(file_name)
+		file_name = dir.get_next()
+	
+	dir.list_dir_end()
+	var parent_dir = DirAccess.open(dir_path.get_base_dir())
+	if parent_dir:
+		parent_dir.remove(dir_path.get_file())
+
 func cleanup_on_editor_close() -> void:
 	if not AppData.cleanupOnClose:
 		print("[MusicEditor] Cleanup disabled in AppData, skipping")

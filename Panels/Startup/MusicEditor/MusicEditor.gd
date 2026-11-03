@@ -1000,21 +1000,15 @@ func _export_music_kit(zip_path: String) -> void:
 	var temp_dir = OS.get_cache_dir() + "/csgo_music_kit_export_" + str(Time.get_ticks_msec())
 	print("[MusicEditor] Creating temp directory: ", temp_dir)
 	
-	var dir = DirAccess.open("/")
-	if not dir:
-		print("[MusicEditor] Error: Failed to open root directory")
-		push_error("Failed to open directory")
-		return
-	
 	# Create temp directory structure
-	var error = dir.make_dir_recursive(temp_dir)
+	var error = DirAccess.make_dir_recursive_absolute(temp_dir)
 	if error != OK:
 		print("[MusicEditor] Error: Failed to create temp directory: ", error)
 		push_error("Failed to create temp directory")
 		return
 	
 	var custom_01_dir = temp_dir + "/custom_01"
-	dir.make_dir_recursive(custom_01_dir)
+	DirAccess.make_dir_recursive_absolute(custom_01_dir)
 	
 	# Copy MP3 files from data directory
 	var data_dir = DirAccess.open(data_path)
@@ -1032,7 +1026,7 @@ func _export_music_kit(zip_path: String) -> void:
 			var source_file = data_path + "/" + file_name
 			var dest_file = custom_01_dir + "/" + file_name
 			print("[MusicEditor] Copying MP3: ", file_name)
-			var copy_error = dir.copy(source_file, dest_file)
+			var copy_error = DirAccess.copy_absolute(source_file, dest_file)
 			if copy_error == OK:
 				mp3_count += 1
 			else:
@@ -1047,7 +1041,7 @@ func _export_music_kit(zip_path: String) -> void:
 	var gsm_dest = custom_01_dir + "/game_sounds_music.txt"
 	if FileAccess.file_exists(gsm_source):
 		print("[MusicEditor] Copying game_sounds_music.txt")
-		var gsm_error = dir.copy(gsm_source, gsm_dest)
+		var gsm_error = DirAccess.copy_absolute(gsm_source, gsm_dest)
 		if gsm_error != OK:
 			print("[MusicEditor] Error copying game_sounds_music.txt: ", gsm_error)
 	else:
@@ -1060,8 +1054,8 @@ func _export_music_kit(zip_path: String) -> void:
 	
 	if not cover_art_path.is_empty() and FileAccess.file_exists(cover_art_path):
 		print("[MusicEditor] Copying album cover: ", cover_art_path)
-		var cover_dest = temp_dir + "/albumcover" + cover_art_path.get_extension()
-		var cover_error = dir.copy(cover_art_path, cover_dest)
+		var cover_dest = temp_dir + "/albumcover." + cover_art_path.get_extension()
+		var cover_error = DirAccess.copy_absolute(cover_art_path, cover_dest)
 		if cover_error != OK:
 			print("[MusicEditor] Error copying album cover: ", cover_error)
 	
@@ -1070,7 +1064,7 @@ func _export_music_kit(zip_path: String) -> void:
 	var made_with_dest = temp_dir + "/MadeWithCSWT.txt"
 	if FileAccess.file_exists(made_with_source):
 		print("[MusicEditor] Copying MadeWithCSWT.txt")
-		var made_with_error = dir.copy(made_with_source, made_with_dest)
+		var made_with_error = DirAccess.copy_absolute(made_with_source, made_with_dest)
 		if made_with_error != OK:
 			print("[MusicEditor] Error copying MadeWithCSWT.txt: ", made_with_error)
 	else:
@@ -1113,22 +1107,20 @@ func _remove_directory_recursive(dir_path: String) -> void:
 	var dir = DirAccess.open(dir_path)
 	if not dir:
 		return
-	
+
 	dir.list_dir_begin()
 	var file_name = dir.get_next()
-	
+
 	while file_name != "":
 		var full_path = dir_path + "/" + file_name
 		if dir.current_is_dir():
 			_remove_directory_recursive(full_path)
 		else:
-			dir.remove(file_name)
+			DirAccess.remove_absolute(full_path)
 		file_name = dir.get_next()
-	
+
 	dir.list_dir_end()
-	var parent_dir = DirAccess.open(dir_path.get_base_dir())
-	if parent_dir:
-		parent_dir.remove(dir_path.get_file())
+	DirAccess.remove_absolute(dir_path)
 
 func cleanup_on_editor_close() -> void:
 	if not AppData.cleanupOnClose:

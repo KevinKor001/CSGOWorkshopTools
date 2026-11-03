@@ -54,9 +54,6 @@ bg_color = Color(1, 1, 1, 0.771)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyrsl"]
 bg_color = Color(0.12955844, 0.1295585, 0.12955838, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8sdb"]
-bg_color = Color(0.11489678, 0.11489683, 0.11489671, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_voo8n"]
 bg_color = Color(0.19434929, 0.19434926, 0.19434926, 1)
 
@@ -200,8 +197,8 @@ script = ExtResource("6_hajql")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-split_offsets = PackedInt32Array(-225)
-split_offset = -225
+split_offsets = PackedInt32Array(-650)
+split_offset = -650
 
 [node name="AssetPanel" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=236613349]
 custom_minimum_size = Vector2(200, 0)
@@ -227,6 +224,7 @@ size_flags_vertical = 3
 column_titles_visible = true
 
 [node name="AudioEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=1421632424]
+visible = false
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -552,7 +550,6 @@ size_flags_horizontal = 3
 script = ExtResource("17_sync_list")
 
 [node name="ConfigEditor" type="Panel" parent="Panel/VBoxContainer/HSplitContainer" unique_id=498461100]
-visible = false
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 
@@ -575,7 +572,7 @@ text = "Music Kit Name"
 
 [node name="LineEdit" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=820862812]
 layout_mode = 2
-placeholder_text = "Epic Cool Musisk Kit"
+placeholder_text = "Epic Cool Musisk Kit name"
 
 [node name="CoverArtInput" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=1216688391 instance=ExtResource("15_ixc2r")]
 custom_minimum_size = Vector2(0, 125)
@@ -584,35 +581,22 @@ default_icon = ExtResource("16_32nnf")
 default_asset_name = "Album cover art"
 default_status_label = "Idle - Empty"
 
+[node name="CheckBox" type="CheckBox" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=689734006]
+layout_mode = 2
+text = "Override music kit class (custom_01)"
+
+[node name="LineEdit2" type="LineEdit" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=2029361059]
+layout_mode = 2
+placeholder_text = "myMusicKitClassName"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/PackageConfig" unique_id=811493636]
+layout_mode = 2
+
 [node name="game_music_sounds" type="VBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer" unique_id=1556411024]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="Config Path" type="Panel" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=380580092]
-visible = false
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_r8sdb")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path" unique_id=118068812]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ConfigPath" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path/HBoxContainer" unique_id=696913673]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "<Path>"
-
-[node name="OpenConfigFile" type="Button" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds/Config Path/HBoxContainer" unique_id=222340940]
-layout_mode = 2
-text = "Open Config file"
 
 [node name="Label" type="Label" parent="Panel/VBoxContainer/HSplitContainer/ConfigEditor/ScrollContainer/game_music_sounds" unique_id=885432000]
 layout_mode = 2
